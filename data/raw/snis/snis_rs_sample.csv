@@ -1,3 +1,3 @@
-municipio,uf,ano,rsu_t_ano,reciclado_t_ano,reciclado_pct,coleta_seletiva_pop_pct,cooperados,custo_mensal_rs,qualidade,fonte
-Sorocaba,SP,2024,228000,3960,2.0,14.8,140,12500000,real,"Prefeitura de Sorocaba (PPP RSU; Sec. Serviços Públicos); Câmara Municipal; Inst. Água e Saneamento"
-Porto Feliz,SP,2024,17160,,,,,,estimativa,"Estimativa: pop x 0,9 kg/hab/dia. Reciclado/cooperados a extrair do PMGIRS 2017 (SMA-SP) + SNIS"
+municipio,uf,ano,rsu_t_ano,reciclado_t_ano,reciclado_pct,coleta_seletiva_pop_pct,cooperados,custo_mensal_rs,qualidade,fonte,composicao_organico,composicao_fonte
+Sorocaba,SP,2024,228000,3960,2.0,14.8,140,12500000,real,"Prefeitura de Sorocaba (PPP RSU; Sec. Serviços Públicos); Câmara Municipal; Inst. Água e Saneamento",0.48,"PMGIRS Sorocaba — SHS Consultoria/Prefeitura de Sorocaba, 2014. Gravimetria: 48% orgânico (Tomo 2, p. 27)"
+Porto Feliz,SP,2024,17160,,,,,,estimativa,"Estimativa: pop x 0,9 kg/hab/dia. Reciclado/cooperados a extrair do PMGIRS 2017 (SMA-SP) + SNIS",,média Brasil (estimativa)

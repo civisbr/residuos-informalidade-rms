@@ -23,6 +23,9 @@ SCHEMA = {
     "reciclado_pct": pl.Float64, "coleta_seletiva_pop_pct": pl.Float64,
     "cooperados": pl.Float64, "custo_mensal_rs": pl.Float64,
     "qualidade": pl.String, "fonte": pl.String,
+    # por-município: composição orgânica local (null = usa fallback global em transform.py)
+    "composicao_organico": pl.Float64,
+    "composicao_fonte": pl.String,
 }
 
 
