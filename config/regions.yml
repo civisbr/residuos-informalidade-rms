@@ -1,0 +1,51 @@
+# Regiões de análise. Cada região é um conjunto de municípios.
+# Extensível: adicione uma nova chave com a lista de municípios (nome, UF)
+# e rode `uv run obs build --region <chave>`.
+#
+# Os códigos IBGE são resolvidos automaticamente (pipeline/sources/ibge.py).
+# Você NÃO precisa decorar códigos — basta nome + UF corretos.
+
+rms:
+  nome: "Região Metropolitana de Sorocaba"
+  uf: SP
+  fonte: "Lei Complementar Estadual 1.241/2014"
+  destaque: "Sorocaba"          # município-foco do painel
+  municipios:
+    # Sub-região 1
+    - { nome: "Alambari", uf: SP, subregiao: 1 }
+    - { nome: "Boituva", uf: SP, subregiao: 1 }
+    - { nome: "Capela do Alto", uf: SP, subregiao: 1 }
+    - { nome: "Cerquilho", uf: SP, subregiao: 1 }
+    - { nome: "Cesário Lange", uf: SP, subregiao: 1 }
+    - { nome: "Jumirim", uf: SP, subregiao: 1 }
+    - { nome: "Sarapuí", uf: SP, subregiao: 1 }
+    - { nome: "Tatuí", uf: SP, subregiao: 1 }
+    - { nome: "Tietê", uf: SP, subregiao: 1 }
+    - { nome: "Itapetininga", uf: SP, subregiao: 1 }
+    # Sub-região 2
+    - { nome: "Alumínio", uf: SP, subregiao: 2 }
+    - { nome: "Araçariguama", uf: SP, subregiao: 2 }
+    - { nome: "Ibiúna", uf: SP, subregiao: 2 }
+    - { nome: "Itu", uf: SP, subregiao: 2 }
+    - { nome: "Mairinque", uf: SP, subregiao: 2 }
+    - { nome: "Porto Feliz", uf: SP, subregiao: 2 }
+    - { nome: "Salto", uf: SP, subregiao: 2 }
+    - { nome: "São Roque", uf: SP, subregiao: 2 }
+    # Sub-região 3
+    - { nome: "Araçoiaba da Serra", uf: SP, subregiao: 3 }
+    - { nome: "Iperó", uf: SP, subregiao: 3 }
+    - { nome: "Piedade", uf: SP, subregiao: 3 }
+    - { nome: "Pilar do Sul", uf: SP, subregiao: 3 }
+    - { nome: "Salto de Pirapora", uf: SP, subregiao: 3 }
+    - { nome: "São Miguel Arcanjo", uf: SP, subregiao: 3 }
+    - { nome: "Sorocaba", uf: SP, subregiao: 3 }
+    - { nome: "Tapiraí", uf: SP, subregiao: 3 }
+    - { nome: "Votorantim", uf: SP, subregiao: 3 }
+
+# Exemplo de outra região (descomente e edite):
+# minha_cidade:
+#   nome: "Meu município"
+#   uf: SP
+#   destaque: "Cidade X"
+#   municipios:
+#     - { nome: "Cidade X", uf: SP }

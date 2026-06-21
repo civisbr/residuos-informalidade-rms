@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Observatório de Resíduos &amp; Informalidade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="eyebrow"><span class="dot"></span> Observatório · Resíduos &amp; Informalidade · <span id="regName">—</span></div>
+  <h1>Para onde vai a massa <em>— e quem fica de fora</em></h1>
+  <p class="sub">Painel vivo do impacto potencial de coleta de orgânicos + bioconversão por BSF. Dado público real combinado a um modelo transparente, para medir desvio de aterro, valorização e formalização de catadores. Open-source, extensível a qualquer município brasileiro.</p>
+</header>
+
+<div class="controls-top">
+  <div class="selwrap">
+    <label for="citySel">Município</label>
+    <select id="citySel" aria-label="Selecionar município"></select>
+  </div>
+  <div class="pop" id="popline">—</div>
+</div>
+
+<div class="seclabel">Panorama da região <span class="tag real">dado público</span></div>
+<div class="region-strip" id="regionStrip"></div>
+
+<div class="seclabel">Fluxo de massa — RSU do município <span id="flowTags"></span></div>
+<div id="flowSlot"></div>
+
+<div class="seclabel">Linha de base do município</div>
+<div class="kpis" id="kpis"></div>
+
+<div class="seclabel">Simulador de impacto — Coleta de orgânicos + BSF <span class="tag proj">projeção do modelo</span></div>
+<div class="sim">
+  <div class="panel">
+    <h3>Parâmetros da operação</h3>
+    <p class="ph">Fase 1 (coleta B2B) com camada Fase 2 (bioconversão). Ajuste e veja o impacto recalcular sobre o orgânico deste município.</p>
+
+    <div class="ctrl">
+      <label>Clientes B2B captados <span class="cv mono"><b id="vCli">36</b></span></label>
+      <input type="range" id="sCli" min="0" max="200" value="36" step="1">
+      <div class="hint" id="hCli"></div>
+    </div>
+    <div class="ctrl">
+      <label>Orgânico por cliente <span class="cv mono"><b id="vKg">80</b> kg/dia</span></label>
+      <input type="range" id="sKg" min="20" max="200" value="80" step="5">
+      <div class="hint">restaurante pequeno/médio: ~30–150 kg/dia de orgânico</div>
+    </div>
+    <div class="ctrl">
+      <label>Partilha p/ catadores <span class="cv mono"><b id="vSh">30</b>%</span></label>
+      <input type="range" id="sSh" min="0" max="60" value="30" step="5">
+      <div class="hint">% do faturamento de gate fee ao fundo de partilha</div>
+    </div>
+    <div class="ctrl">
+      <label>Gate fee por cliente <span class="cv mono">R$ <b id="vFee">400</b>/mês</span></label>
+      <input type="range" id="sFee" min="150" max="900" value="400" step="25">
+      <div class="hint">mensalidade B2B de coleta — receita da Fase 1</div>
+    </div>
+
+    <details class="assump"><summary>Pressupostos do modelo</summary>
+      <div class="ab" id="assumpBody"></div>
+    </details>
+  </div>
+
+  <div>
+    <div class="out">
+      <div class="ocard c1"><div class="o-lab">ORGÂNICO DESVIADO DO ATERRO</div>
+        <div class="o-val mono"><span id="oDiv">—</span> <small>t/ano</small></div>
+        <div class="o-sub" id="oDivSub"></div></div>
+      <div class="ocard c2"><div class="o-lab">CO₂e EVITADO</div>
+        <div class="o-val mono"><span id="oCO2">—</span> <small>t/ano</small></div>
+        <div class="o-sub">~<b id="oCars">—</b> carros fora de circulação por um ano (ilustrativo).</div></div>
+      <div class="ocard c3"><div class="o-lab">SUBPRODUTOS BSF · FASE 2</div>
+        <div class="o-val mono"><span id="oFrass">—</span> <small>t/ano frass</small></div>
+        <div class="o-sub"><b id="oLarva">—</b> de larva seca (mercado pet/aves).</div></div>
+      <div class="ocard c4"><div class="o-lab">CATADORES NA ESCADA DE FORMALIZAÇÃO</div>
+        <div class="o-val mono"><span id="oCat">—</span> <small>sustentados</small></div>
+        <div class="o-sub">a partir de <b id="oPool">—</b>/ano do fundo de partilha.</div></div>
+    </div>
+    <div class="revline">
+      <span class="rl-lab">Receita de gate fee (Fase 1) — antes de subprodutos</span>
+      <span class="rl-val mono" id="rev">—</span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="srcgrid">
+    <div><h4>Fontes do baseline</h4>
+      <p>SNIS / SINISA — Diagnóstico de Manejo de RSU (anual, por município)</p>
+      <p>PMGIRS — Plano Municipal de Gestão Integrada de Resíduos</p>
+      <p>Prefeituras — PPP / Sec. de Serviços Públicos</p>
+      <p>Instituto Água e Saneamento — ficha do município</p></div>
+    <div><h4>Informalidade</h4>
+      <p>IBGE — Censo / PNAD (ocupação informal)</p>
+      <p>RAIS / CAGED — vínculo formal (proxy)</p>
+      <p>Convênios municipais com cooperativas (transparência)</p>
+      <p>MNCR / IPEA — estimativas da população catadora</p></div>
+    <div><h4>Camada operacional (futura)</h4>
+      <p>Telemetria da própria coleta — t/mês por cliente</p>
+      <p>Pesagem de orgânico, larva e frass</p>
+      <p>Registro da escada de partilha por catador</p>
+      <p>É o que torna o painel <em>vivo</em> de verdade.</p></div>
+  </div>
+  <div class="caveat" id="caveat"></div>
+  <div class="foot-meta" id="footMeta">—</div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

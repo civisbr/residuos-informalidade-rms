@@ -1,0 +1,98 @@
+# Requirements: Observatório de Resíduos & Informalidade
+
+**Defined:** 2026-06-21
+**Core Value:** Credibilidade do dado — nunca apresentar projeção como medição, nunca inventar número.
+
+## v1 Requirements
+
+Requisitos do v1. Derivados dos checklists do `GSD.md` (M1→M5). Cada categoria
+mapeia a uma fase do roadmap (1 milestone = 1 fase).
+
+### Baseline (M1 — Baseline real da RMS)
+
+- [ ] **BASE-01**: Série histórica do SNIS-RS baixada e processada para a RMS (ver `scripts/refresh_snis.md`)
+- [ ] **BASE-02**: Gravimetria real do PMGIRS de Sorocaba substitui a `composicao` global por dado local
+- [ ] **BASE-03**: RSU/reciclado/cooperados de Porto Feliz extraídos do PMGIRS 2017 (SMA-SP)
+- [ ] **BASE-04**: Os 27 municípios têm linha (real com o que o SNIS tiver; sem dado → `pendente`, sem chute)
+- [ ] **BASE-05**: Cada linha de dado cita sua fonte (coluna `fonte` preenchida)
+
+### Informalidade (M2 — Camada de informalidade)
+
+- [ ] **INFO-01**: Fonte `sources/ibge_informalidade.py` lê ocupação informal (PNAD/Censo) por município
+- [ ] **INFO-02**: Proxy de formalização (RAIS/CAGED vs. catadores em cooperativa) calculado
+- [ ] **INFO-03**: Painel mostra card/seção de informalidade por município, com flag de qualidade, separado de estimativa
+- [ ] **INFO-04**: Nota explícita de subcontagem da população catadora exibida no painel
+
+### Deploy (M3 — Deploy contínuo no GitHub Pages)
+
+- [ ] **DEPLOY-01**: Workflow `.github/workflows/build.yml` revisado e reconstrói `data.json` no push à `main`
+- [ ] **DEPLOY-02**: GitHub Pages ativado (branch/Actions) e servindo o site
+- [ ] **DEPLOY-03**: README com badge de build e URL pública
+- [ ] **DEPLOY-04**: `site/data.json` commitado para o Pages funcionar mesmo sem rebuild
+
+### Generalização (M4 — Qualquer cidade BR)
+
+- [ ] **GEN-01**: `ibge.refresh()` implementado (API localidades + população) regrava o cache
+- [ ] **GEN-02**: `snis.refresh()` documentado e, se viável, automatizado
+- [ ] **GEN-03**: Erro amigável quando um município não resolve no IBGE
+- [ ] **GEN-04**: Doc "Crie o painel da sua cidade em 5 minutos" no README; terceiro gera outra região só editando `regions.yml`
+
+### Camada viva (M5 — Operacional)
+
+- [ ] **LIVE-01**: Esquema de telemetria definido (t coletadas/mês por cliente, larva, frass, partilha)
+- [ ] **LIVE-02**: Fonte `sources/operacao.py` lê a telemetria (CSV/planilha exportada)
+- [ ] **LIVE-03**: Série temporal no painel: baseline público + medições reais lado a lado
+- [ ] **LIVE-04**: Painel de impacto acumulado (desvio de aterro, renda a catadores no tempo)
+
+## v2 Requirements
+
+(Nenhum — backlog frio listado em Out of Scope.)
+
+## Out of Scope
+
+Explicitamente excluído do v1. Documentado para evitar scope creep.
+
+| Feature | Reason |
+|---------|--------|
+| Mapa coroplético da região | Diferenciador visual; depende de baseline confiável primeiro |
+| Comparação de pares (município vs. mediana sub-região) | Depende de cobertura ampla de dado (pós-M4) |
+| Export de relatório PDF reprodutível por município | Feature de saída, não core do observatório |
+| Inventar/estimar número para município sem dado | Proibido pela regra sagrada — fica `pendente` |
+| Uso externo do simulador sem calibração gravimétrica local | Coeficientes conservadores exigem calibração antes de publicar |
+
+## Traceability
+
+Mapeamento 1:1 — cada milestone do GSD.md vira uma fase.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| BASE-01 | Phase 1 | Pending |
+| BASE-02 | Phase 1 | Pending |
+| BASE-03 | Phase 1 | Pending |
+| BASE-04 | Phase 1 | Pending |
+| BASE-05 | Phase 1 | Pending |
+| INFO-01 | Phase 2 | Pending |
+| INFO-02 | Phase 2 | Pending |
+| INFO-03 | Phase 2 | Pending |
+| INFO-04 | Phase 2 | Pending |
+| DEPLOY-01 | Phase 3 | Pending |
+| DEPLOY-02 | Phase 3 | Pending |
+| DEPLOY-03 | Phase 3 | Pending |
+| DEPLOY-04 | Phase 3 | Pending |
+| GEN-01 | Phase 4 | Pending |
+| GEN-02 | Phase 4 | Pending |
+| GEN-03 | Phase 4 | Pending |
+| GEN-04 | Phase 4 | Pending |
+| LIVE-01 | Phase 5 | Pending |
+| LIVE-02 | Phase 5 | Pending |
+| LIVE-03 | Phase 5 | Pending |
+| LIVE-04 | Phase 5 | Pending |
+
+**Coverage:**
+- v1 requirements: 21 total
+- Mapped to phases: 21
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-06-21*
+*Last updated: 2026-06-21 after initial definition*
