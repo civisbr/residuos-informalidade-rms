@@ -26,6 +26,7 @@ def to_payload(region_key: str, region_meta: dict, df: pl.DataFrame,
             "coleta_seletiva_pop_pct": r["coleta_seletiva_pop_pct"],
             "cooperados": r["cooperados"],
             "custo_mensal_rs": r["custo_mensal_rs"],
+            "composicao_fonte": r.get("composicao_fonte"),  # procedência da composição orgânica
         })
 
     return {

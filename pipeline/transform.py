@@ -26,8 +26,11 @@ def build_region(municipios: list[dict], ibge: pl.DataFrame, snis: pl.DataFrame,
     )
 
     df = df.with_columns([
-        # fração orgânica estimada do RSU (feedstock do BSF)
-        (pl.col("rsu_t_ano") * org_pct).alias("organico_t_ano"),
+        # fração orgânica: usa gravimetria local se disponível, senão média Brasil
+        pl.when(pl.col("composicao_organico").is_not_null())
+          .then(pl.col("rsu_t_ano") * pl.col("composicao_organico"))
+          .otherwise(pl.col("rsu_t_ano") * org_pct)
+          .alias("organico_t_ano"),
         # quanto vai pro aterro hoje
         (pl.col("rsu_t_ano") * (1 - pl.col("reciclado_pct").fill_null(0) / 100)).alias("aterro_t_ano"),
         # flag de qualidade: tem dado de RSU? real/estimativa : pendente

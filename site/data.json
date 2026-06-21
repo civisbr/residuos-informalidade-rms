@@ -40,7 +40,7 @@
     "municipios_total": 27,
     "municipios_com_dado": 2,
     "rsu_t_ano": 245160.0,
-    "organico_t_ano": 125031.6,
+    "organico_t_ano": 118191.6,
     "aterro_t_ano": 240600.0,
     "reciclado_t_ano": 3960.0,
     "cooperados": 140.0,
@@ -63,7 +63,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Boituva",
@@ -81,7 +82,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Capela do Alto",
@@ -99,7 +101,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Cerquilho",
@@ -117,7 +120,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Cesário Lange",
@@ -135,7 +139,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Itapetininga",
@@ -153,7 +158,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Jumirim",
@@ -171,7 +177,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Sarapuí",
@@ -189,7 +196,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Tatuí",
@@ -207,7 +215,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Tietê",
@@ -225,7 +234,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Alumínio",
@@ -243,7 +253,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Araçariguama",
@@ -261,7 +272,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Ibiúna",
@@ -279,7 +291,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Itu",
@@ -297,7 +310,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Mairinque",
@@ -315,7 +329,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Porto Feliz",
@@ -333,7 +348,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": "média Brasil (estimativa)"
     },
     {
       "nome": "Salto",
@@ -351,7 +367,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "São Roque",
@@ -369,7 +386,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Araçoiaba da Serra",
@@ -387,7 +405,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Iperó",
@@ -405,7 +424,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Piedade",
@@ -423,7 +443,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Pilar do Sul",
@@ -441,7 +462,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Salto de Pirapora",
@@ -459,7 +481,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Sorocaba",
@@ -471,13 +494,14 @@
       "flag": "real",
       "fonte": "Prefeitura de Sorocaba (PPP RSU; Sec. Serviços Públicos); Câmara Municipal; Inst. Água e Saneamento",
       "rsu_t_ano": 228000.0,
-      "organico_t_ano": 116280.0,
+      "organico_t_ano": 109440.0,
       "aterro_t_ano": 223440.0,
       "reciclado_t_ano": 3960.0,
       "reciclado_pct": 2.0,
       "coleta_seletiva_pop_pct": 14.8,
       "cooperados": 140.0,
-      "custo_mensal_rs": 12500000.0
+      "custo_mensal_rs": 12500000.0,
+      "composicao_fonte": "PMGIRS Sorocaba — SHS Consultoria/Prefeitura de Sorocaba, 2014. Gravimetria: 48% orgânico (Tomo 2, p. 27)"
     },
     {
       "nome": "São Miguel Arcanjo",
@@ -495,7 +519,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Tapiraí",
@@ -513,7 +538,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     },
     {
       "nome": "Votorantim",
@@ -531,7 +557,8 @@
       "reciclado_pct": null,
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
-      "custo_mensal_rs": null
+      "custo_mensal_rs": null,
+      "composicao_fonte": null
     }
   ]
 }
