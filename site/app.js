@@ -1,0 +1,191 @@
+// Observatório — painel data-driven. Lê data.json gerado pela pipeline.
+let DATA = null, COEF = null, CITY = null;
+
+const fmt = (n, d = 0) => (n == null ? "—" :
+  Number(n).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d }));
+const $ = id => document.getElementById(id);
+
+async function boot() {
+  try {
+    const res = await fetch("./data.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(res.status);
+    DATA = await res.json();
+  } catch (e) {
+    document.querySelector("main, body").insertAdjacentHTML("afterbegin",
+      `<div class="err"><b>Não consegui carregar data.json.</b><br>
+       Rode <code>uv run obs build</code> e sirva a pasta <code>site/</code> com
+       <code>python -m http.server</code> (abrir via file:// bloqueia o fetch).</div>`);
+    return;
+  }
+  COEF = DATA.coeficientes;
+  $("regName").textContent = DATA.meta.regiao_nome;
+  $("footMeta").textContent =
+    `Gerado em ${DATA.meta.gerado_em} · região ${DATA.meta.regiao_key} · baseline: ${DATA.meta.fonte_baseline} · v0.1`;
+  $("caveat").innerHTML =
+    `<b>Leia antes de usar externamente.</b> ${DATA.meta.aviso} Os números de catadores
+     informais são subcontados pelas bases oficiais — trate como piso, não total.`;
+  buildAssumptions();
+  buildRegionStrip();
+  buildCitySelect();
+  wireSimulator();
+
+  const d = DATA.simulador_defaults;
+  $("sCli").value = d.clientes; $("sKg").value = d.kg_dia;
+  $("sSh").value = d.partilha_pct; $("sFee").value = d.gate_fee;
+
+  selectCity(DATA.meta.destaque || DATA.municipios[0].nome);
+}
+
+function buildAssumptions() {
+  const c = COEF;
+  $("assumpBody").innerHTML =
+    `Fração orgânica do RSU: <code>${c.composicao.organico * 100}%</code> (substituir pela gravimetria do PMGIRS).<br>
+     Conversão BSF (larva úmida): <code>${c.bsf.conversao_larva_umida * 100}%</code> ·
+     larva seca <code>${c.bsf.larva_seca_sobre_umida * 100}%</code> · frass <code>${c.bsf.frass_sobre_organico * 100}%</code>.<br>
+     CO₂e evitado: <code>${c.clima.co2e_por_t_organico} t</code> por t de orgânico desviada.<br>
+     Renda-alvo catador: <code>R$ ${fmt(c.operacao.renda_alvo_catador_mes)}</code>/mês.<br>
+     Coeficientes conservadores — calibre com dados locais antes de publicar.`;
+}
+
+function buildRegionStrip() {
+  const t = DATA.totais;
+  const cells = [
+    ["Municípios com dado", `${t.municipios_com_dado}<small>/${t.municipios_total}</small>`],
+    ["RSU (com dado)", `${fmt(t.rsu_t_ano)}<small> t/ano</small>`],
+    ["Orgânico estimado", `${fmt(t.organico_t_ano)}<small> t/ano</small>`],
+    ["Reciclado", `${fmt(t.reciclado_t_ano)}<small> t/ano</small>`],
+    ["Cooperados mapeados", `${fmt(t.cooperados)}`],
+    ["População", `${fmt(t.populacao)}`],
+  ];
+  $("regionStrip").innerHTML = cells.map(([l, v]) =>
+    `<div><div class="rs-l">${l}</div><div class="rs-v">${v}</div></div>`).join("");
+}
+
+function buildCitySelect() {
+  const subs = { 1: [], 2: [], 3: [], "null": [] };
+  DATA.municipios.forEach(m => (subs[m.subregiao ?? "null"].push(m)));
+  const flag = m => m.flag === "real" ? " ✓" : m.flag === "estimativa" ? " ~" : " ⊘";
+  let html = "";
+  for (const sr of [1, 2, 3, "null"]) {
+    if (!subs[sr].length) continue;
+    const lbl = sr === "null" ? "Outros" : `Sub-região ${sr}`;
+    html += `<optgroup label="${lbl}">` +
+      subs[sr].map(m => `<option value="${m.nome}">${m.nome}${flag(m)}</option>`).join("") +
+      `</optgroup>`;
+  }
+  $("citySel").innerHTML = html;
+  $("citySel").addEventListener("change", e => selectCity(e.target.value));
+}
+
+function selectCity(nome) {
+  CITY = DATA.municipios.find(m => m.nome === nome) || DATA.municipios[0];
+  $("citySel").value = CITY.nome;
+  $("popline").textContent = CITY.populacao
+    ? `pop. ~${fmt(CITY.populacao)} hab` : "população a levantar";
+  renderFlow();
+  renderKpis();
+  recalc();
+}
+
+function renderFlow() {
+  const c = CITY, comp = COEF.composicao;
+  if (c.rsu_t_ano == null) {
+    $("flowTags").innerHTML = `<span class="tag pend">pendente</span>`;
+    $("flowSlot").innerHTML =
+      `<div class="pendbox"><b>${c.nome} ainda não tem dado público carregado.</b>
+       Extraia do SNIS / PMGIRS e rode <code>uv run obs build</code>.
+       ${c.fonte ? "<br><span class='mono' style='font-size:12px'>" + c.fonte + "</span>" : ""}</div>`;
+    return;
+  }
+  const tag = c.flag === "estimativa" ? `<span class="tag est">estimativa</span>` : `<span class="tag real">dado público</span>`;
+  $("flowTags").innerHTML = tag + ` <span class="tag est">composição estimada</span>`;
+
+  const gen = c.rsu_t_ano, org = gen * comp.organico, rec = gen * comp.reciclavel_seco, rej = gen * comp.rejeito;
+  const recPct = c.reciclado_pct, recT = c.reciclado_t_ano;
+  $("flowSlot").innerHTML = `
+    <div class="flowwrap">
+      <div class="flow-top">
+        <div class="flow-total"><span class="n mono">${fmt(gen)}</span><span class="u">t / ano de RSU</span></div>
+        <div class="flow-cap">~${fmt(gen / 365)} t/dia. A largura de cada faixa é a fração estimada do fluxo.</div>
+      </div>
+      <div class="bar">
+        <div class="seg organic" style="flex-basis:${comp.organico * 100}%"><span class="sv">${fmt(org)} t</span><span class="sl">orgânico</span></div>
+        <div class="seg recic" style="flex-basis:${comp.reciclavel_seco * 100}%"><span class="sv">${fmt(rec)} t</span><span class="sl">reciclável seco</span></div>
+        <div class="seg rejeito" style="flex-basis:${comp.rejeito * 100}%"><span class="sv">${fmt(rej)} t</span><span class="sl">rejeito</span></div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--organic)"></i> orgânico — alimento do BSF</span>
+        <span><i style="background:var(--recic)"></i> reciclável seco — cadeia dos catadores</span>
+        <span><i style="background:var(--rejeito)"></i> rejeito</span>
+      </div>
+      <div class="fate">
+        <div>recuperado hoje<b class="bad">${recPct != null ? "~" + fmt(recPct, 1) + "%" : "—"}</b>
+          <span class="mono">${recT != null ? "~" + fmt(recT) + " t/ano" : "dado a levantar"}</span></div>
+        <div>vai pro aterro<b class="bad">${recPct != null ? "~" + fmt(100 - recPct, 1) + "%" : "—"}</b>
+          <span class="mono">${c.aterro_t_ano != null ? "~" + fmt(c.aterro_t_ano) + " t/ano" : "dado a levantar"}</span></div>
+        <div>coleta seletiva<b>${c.coleta_seletiva_pop_pct != null ? fmt(c.coleta_seletiva_pop_pct, 1) + "%" : "—"}</b><span class="mono">da população</span></div>
+        <div>custo municipal<b>${c.custo_mensal_rs != null ? "R$ " + fmt(c.custo_mensal_rs / 1e6, 1) + " mi" : "—"}</b><span class="mono">/mês · coleta+aterro</span></div>
+      </div>
+    </div>`;
+}
+
+function renderKpis() {
+  const c = CITY;
+  const tag = f => f === "real" ? `<span class="tag real">real</span>` :
+    f === "estimativa" ? `<span class="tag est">estim.</span>` : `<span class="tag pend">pendente</span>`;
+  const cell = (lab, val, u, note, f) =>
+    `<div class="kpi${f === 'pendente' ? ' pend' : ''}">
+       <div class="k-lab">${lab} ${tag(f)}</div>
+       <div class="k-val mono">${val}<small>${u}</small></div>
+       <div class="k-note">${note}</div></div>`;
+  const has = c.rsu_t_ano != null;
+  const f = c.flag;
+  $("kpis").innerHTML = [
+    cell("Geração de RSU", has ? fmt(c.rsu_t_ano) : "—", has ? " t/ano" : "", has ? `~${fmt(c.rsu_t_ano / 365)} t/dia` : "extrair do SNIS", f),
+    cell("Reciclado", c.reciclado_pct != null ? "~" + fmt(c.reciclado_pct, 1) : "—", c.reciclado_pct != null ? "%" : "", c.reciclado_t_ano != null ? `~${fmt(c.reciclado_t_ano)} t/ano` : "a levantar", c.reciclado_pct != null ? f : "pendente"),
+    cell("Cooperados", c.cooperados != null ? "~" + fmt(c.cooperados) : "—", "", c.cooperados != null ? "em cooperativas" : "a levantar", c.cooperados != null ? f : "pendente"),
+    cell("Coleta seletiva", c.coleta_seletiva_pop_pct != null ? fmt(c.coleta_seletiva_pop_pct, 1) : "—", c.coleta_seletiva_pop_pct != null ? "%" : "", "cobertura da população", c.coleta_seletiva_pop_pct != null ? f : "pendente"),
+    cell("Custo coleta+aterro", c.custo_mensal_rs != null ? "R$" + fmt(c.custo_mensal_rs / 1e6, 1) : "—", c.custo_mensal_rs != null ? " mi/mês" : "", "convencional + disposição", c.custo_mensal_rs != null ? f : "pendente"),
+    cell("Orgânico ao aterro", has ? "~" + fmt(c.organico_t_ano / 1000, 1) : "—", has ? " mil t/ano" : "", `fração orgânica (${COEF.composicao.organico * 100}%)`, has ? "estimativa" : "pendente"),
+  ].join("");
+}
+
+// ---- simulador: espelha pipeline/model.py ----
+function project(clientes, kgDia, partilhaPct, gateFee, organicoMunicipal) {
+  const b = COEF.bsf, cl = COEF.clima, op = COEF.operacao;
+  const desviado = clientes * kgDia / 1000 * 365;
+  const co2e = desviado * cl.co2e_por_t_organico;
+  const larvaSeca = desviado * b.conversao_larva_umida * b.larva_seca_sobre_umida;
+  const frass = desviado * b.frass_sobre_organico;
+  const receita = clientes * gateFee * 12;
+  const fundo = receita * partilhaPct / 100;
+  const catadores = fundo / (op.renda_alvo_catador_mes * 12);
+  const pctOrg = organicoMunicipal ? desviado / organicoMunicipal * 100 : null;
+  return { desviado, co2e, carros: co2e / cl.co2e_por_carro_ano, larvaSeca, frass, receita, fundo, catadores, pctOrg };
+}
+
+function recalc() {
+  const cli = +$("sCli").value, kg = +$("sKg").value, sh = +$("sSh").value, fee = +$("sFee").value;
+  $("vCli").textContent = cli; $("vKg").textContent = kg; $("vSh").textContent = sh; $("vFee").textContent = fmt(fee);
+  const be = COEF.operacao.break_even_clientes;
+  $("hCli").textContent = cli < be ? `abaixo do equilíbrio estimado (${be})`
+    : cli === be ? `${be} = ponto de equilíbrio estimado da Fase 1` : `${cli - be} clientes acima do equilíbrio`;
+
+  const orgMun = CITY && CITY.organico_t_ano != null ? CITY.organico_t_ano : null;
+  const r = project(cli, kg, sh, fee, orgMun);
+
+  $("oDiv").textContent = fmt(r.desviado);
+  $("oDivSub").innerHTML = r.pctOrg != null
+    ? `equivale a <b>${fmt(r.pctOrg, 1)}%</b> do orgânico municipal — um pé na porta, não bala de prata.`
+    : `selecione um município com dado de RSU para ver o % do orgânico local.`;
+  $("oCO2").textContent = fmt(r.co2e); $("oCars").textContent = fmt(r.carros);
+  $("oFrass").textContent = fmt(r.frass); $("oLarva").textContent = fmt(r.larvaSeca) + " t/ano";
+  $("oCat").textContent = fmt(r.catadores, 1); $("oPool").textContent = "R$ " + fmt(r.fundo / 1000, 1) + " mil";
+  $("rev").textContent = "R$ " + fmt(r.receita / 1000, 1) + " mil/ano";
+}
+
+function wireSimulator() {
+  ["sCli", "sKg", "sSh", "sFee"].forEach(id => $(id).addEventListener("input", recalc));
+}
+
+boot();

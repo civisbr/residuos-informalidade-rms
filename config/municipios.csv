@@ -1,0 +1,28 @@
+nome,uf,codigo_ibge,populacao,fonte_pop
+Sorocaba,SP,3552205,709000,"IBGE/SINISA (pop. urbana)"
+Votorantim,SP,,124000,"IBGE ~2022 (aprox.)"
+Itu,SP,,175000,"IBGE ~2022 (aprox.)"
+Salto,SP,,120000,"IBGE ~2022 (aprox.)"
+Itapetininga,SP,,159000,"IBGE ~2022 (aprox.)"
+Tatuí,SP,,120000,"IBGE ~2022 (aprox.)"
+Porto Feliz,SP,,53000,"IBGE ~2022 (aprox.)"
+São Roque,SP,,90000,"IBGE ~2022 (aprox.)"
+Boituva,SP,,65000,"IBGE ~2022 (aprox.)"
+Alambari,SP,,,
+Capela do Alto,SP,,,
+Cerquilho,SP,,,
+Cesário Lange,SP,,,
+Jumirim,SP,,,
+Sarapuí,SP,,,
+Tietê,SP,,,
+Alumínio,SP,,,
+Araçariguama,SP,,,
+Ibiúna,SP,,,
+Mairinque,SP,,,
+Araçoiaba da Serra,SP,,,
+Iperó,SP,,,
+Piedade,SP,,,
+Pilar do Sul,SP,,,
+Salto de Pirapora,SP,,,
+São Miguel Arcanjo,SP,,,
+Tapiraí,SP,,,

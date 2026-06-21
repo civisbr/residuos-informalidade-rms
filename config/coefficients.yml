@@ -1,0 +1,30 @@
+# Coeficientes do modelo de impacto Coleta + BSF.
+# TUDO AQUI É PROJEÇÃO, NÃO MEDIÇÃO. Valores conservadores de literatura.
+# Calibre com a gravimetria local (PMGIRS) e telemetria da operação antes de
+# publicar qualquer número externamente.
+
+# Composição do RSU (fração da massa). Substituir pela gravimetria municipal
+# quando disponível (o PMGIRS de Sorocaba tem análise gravimétrica real).
+composicao:
+  organico: 0.51          # média Brasil; feedstock do BSF
+  reciclavel_seco: 0.30   # cadeia dos catadores
+  rejeito: 0.19
+
+# Bioconversão por larva de mosca soldado-negro (Hermetia illucens).
+bsf:
+  conversao_larva_umida: 0.15   # kg de larva úmida por kg de orgânico
+  larva_seca_sobre_umida: 0.30  # kg de larva seca por kg de larva úmida
+  frass_sobre_organico: 0.35    # kg de biofertilizante por kg de orgânico
+
+# Emissões evitadas.
+clima:
+  co2e_por_t_organico: 0.65     # t CO2e evitada por t de orgânico fora do aterro
+  co2e_por_carro_ano: 4.6       # t CO2e/ano por carro (equivalência ilustrativa)
+
+# Operação Fase 1 (coleta B2B) e escada de partilha com catadores.
+operacao:
+  gate_fee_padrao_mes: 400      # R$/cliente/mês
+  organico_por_cliente_kg_dia: 80
+  break_even_clientes: 36       # ponto de equilíbrio estimado da Fase 1
+  renda_alvo_catador_mes: 1500  # R$/mês na escada de formalização
+  partilha_padrao_pct: 30       # % do faturamento ao fundo de partilha
