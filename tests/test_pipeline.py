@@ -1,5 +1,6 @@
 """Testes de sanidade — rodam offline, garantem que o build não regrida."""
 from pathlib import Path
+import pytest
 import yaml
 from pipeline.sources import ibge, snis
 from pipeline import transform, model
@@ -22,6 +23,7 @@ def test_build_offline_gera_dados():
     soro = df.filter(df["key"] == "sorocaba").to_dicts()[0]
     assert soro["flag"] == "real"
     assert soro["rsu_t_ano"] == 228000
+    assert soro["organico_t_ano"] == pytest.approx(228000 * 0.48, rel=1e-3)  # gravimetria local 0.48, per D-12
     # pendentes existem e não inventam número
     pend = df.filter(df["flag"] == "pendente")
     assert pend.height >= 20
