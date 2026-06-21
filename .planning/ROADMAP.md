@@ -34,10 +34,11 @@ estar verde.
   2. Sorocaba usa gravimetria real do PMGIRS (não a `composicao` global) e Porto Feliz tem RSU/reciclado/cooperados do PMGIRS 2017
   3. Toda linha com dado exibe sua `fonte` no painel
   4. Testes de sanidade continuam verdes (`uv run pytest`)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: TBD (definido em /gsd-plan-phase 1)
+- [ ] 01-01-PLAN.md — Gravimetria Sorocaba (SCHEMA+transform+render) + tentativa PMGIRS Porto Feliz + testes D-12
+- [ ] 01-02-PLAN.md — Download manual SNIS 25 municípios (checkpoint humano) + ingestão + teste pend.height D-11
 
 ### Phase 2: Camada de informalidade
 **Goal**: O painel mostra, por município, um indicador de informalidade com fonte, separado do que é estimativa, com nota de subcontagem da população catadora.
@@ -91,7 +92,7 @@ Plans:
 **Requirements**: LIVE-01, LIVE-02, LIVE-03, LIVE-04
 **Success Criteria** (what must be TRUE):
   1. Esquema de telemetria definido (t coletadas/mês por cliente, larva, frass, partilha)
-  2. `sources/operacao.py` lê a telemetria (CSV/planilha exportada) na pipeline
+  2. `sources/operacao.py` lê a telemetria (CSV/planilha exportada)
   3. Painel mostra série temporal com baseline público e medições reais lado a lado, visualmente separados
   4. Painel de impacto acumulado exibe desvio de aterro e renda a catadores no tempo
 **Plans**: TBD
@@ -106,7 +107,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Baseline real da RMS | 0/TBD | Not started | - |
+| 1. Baseline real da RMS | 0/2 | Not started | - |
 | 2. Camada de informalidade | 0/TBD | Not started | - |
 | 3. Deploy contínuo no GitHub Pages | 0/TBD | Not started | - |
 | 4. Generalizar para qualquer cidade BR | 0/TBD | Not started | - |
