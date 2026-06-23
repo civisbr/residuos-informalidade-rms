@@ -25,7 +25,7 @@
     "tdd_mode": false,
     "human_verify_mode": "end-of-phase",
     "auto_advance": false,
-    "_auto_chain_active": false,
+    "_auto_chain_active": true,
     "node_repair": true,
     "node_repair_budget": 2,
     "ui_phase": true,
@@ -48,7 +48,8 @@
     "post_planning_gaps": true,
     "security_enforcement": true,
     "security_asvs_level": 1,
-    "security_block_on": "high"
+    "security_block_on": "high",
+    "use_worktrees": false
   },
   "hooks": {
     "context_warnings": true,
