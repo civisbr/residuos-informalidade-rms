@@ -11,10 +11,10 @@ mapeia a uma fase do roadmap (1 milestone = 1 fase).
 ### Baseline (M1 — Baseline real da RMS)
 
 - [ ] **BASE-01**: Série histórica do SNIS-RS baixada e processada para a RMS (ver `scripts/refresh_snis.md`)
-- [ ] **BASE-02**: Gravimetria real do PMGIRS de Sorocaba substitui a `composicao` global por dado local
-- [ ] **BASE-03**: RSU/reciclado/cooperados de Porto Feliz extraídos do PMGIRS 2017 (SMA-SP)
+- [x] **BASE-02**: Gravimetria real do PMGIRS de Sorocaba substitui a `composicao` global por dado local
+- [x] **BASE-03**: RSU/reciclado/cooperados de Porto Feliz extraídos do PMGIRS 2017 (SMA-SP)
 - [ ] **BASE-04**: Os 27 municípios têm linha (real com o que o SNIS tiver; sem dado → `pendente`, sem chute)
-- [ ] **BASE-05**: Cada linha de dado cita sua fonte (coluna `fonte` preenchida)
+- [x] **BASE-05**: Cada linha de dado cita sua fonte (coluna `fonte` preenchida)
 
 ### Informalidade (M2 — Camada de informalidade)
 
@@ -67,10 +67,10 @@ Mapeamento 1:1 — cada milestone do GSD.md vira uma fase.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | BASE-01 | Phase 1 | Pending |
-| BASE-02 | Phase 1 | Pending |
-| BASE-03 | Phase 1 | Pending |
+| BASE-02 | Phase 1 | Complete |
+| BASE-03 | Phase 1 | Complete |
 | BASE-04 | Phase 1 | Pending |
-| BASE-05 | Phase 1 | Pending |
+| BASE-05 | Phase 1 | Complete |
 | INFO-01 | Phase 2 | Pending |
 | INFO-02 | Phase 2 | Pending |
 | INFO-03 | Phase 2 | Pending |
