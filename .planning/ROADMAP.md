@@ -61,11 +61,21 @@ Plans:
   3. Proxy de formalização (RAIS/CAGED vs. cooperados) aparece com sua fonte
   4. Nota explícita de subcontagem da população catadora visível no painel
 
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
 
-- [ ] 02-01: TBD (definido em /gsd-plan-phase 2)
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Snapshots CSV (Censo/RAIS/PNAD) + fontes offline ibge_informalidade.py / rais.py / pnad_regional.py + testes INFO-01/INFO-02
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — Integração pipeline: transform.build_region() com joins + proxy D-06/D-07; render.to_payload() com campos de informalidade + meta.pnad; cli.py atualizado; data.json regenerado
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-03-PLAN.md — Painel: renderInformalidade() em app.js + slots index.html + nota fixa D-10 + célula region-strip + verificação visual
 
 ### Phase 3: Deploy contínuo no GitHub Pages
 
@@ -132,7 +142,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Baseline real da RMS | 2/2 | Complete | 2026-06-23 |
-| 2. Camada de informalidade | 0/TBD | Not started | - |
+| 2. Camada de informalidade | 0/3 | Not started | - |
 | 3. Deploy contínuo no GitHub Pages | 0/TBD | Not started | - |
 | 4. Generalizar para qualquer cidade BR | 0/TBD | Not started | - |
 | 5. Camada viva (operacional) | 0/TBD | Not started | - |
