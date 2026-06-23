@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-06-21)
 ## Current Position
 
 Phase: 1 (Baseline real da RMS) — ✅ COMPLETE (2026-06-23): 27/27 municípios com dado SNIS-RS real, 0 inventados
-Phase: 2 (Camada de informalidade) — CONTEXT capturado (2026-06-23). Pronto para planejar.
-Plan: Fase 1 (2/2) concluída; Fase 2 sem plans ainda
-Status: Próximo → /gsd-plan-phase 2 (ou /gsd-plan-phase --research-phase 2 para investigar fontes Censo/PNAD/RAIS antes)
+Phase: 2 (Camada de informalidade) — CONTEXT + RESEARCH prontos. Planejamento interrompido (limite de sessão).
+Plan: Fase 1 (2/2) concluída; Fase 2 sem plans ainda (RESEARCH.md feita)
+Status: Retomar planejamento → /gsd-plan-phase 2 (pula pesquisa; roda pattern-map + planner + plan-checker)
 Last activity: 2026-06-23
 
 Progress: [████░░░░░░░░░░░░░░░░░░] 20% (1/5 fases)
@@ -87,7 +87,8 @@ From `.planning/codebase/CONCERNS.md`, relevantes às próximas fases:
 ## Session Continuity
 
 Last session: 2026-06-23
-Stopped at: Fase 2 context gathered. CONTEXT.md + DISCUSSION-LOG escritos e commitados (be781f4). Decisões INFO-01..04 capturadas (Censo+PNAD, informalidade geral+lente catador, proxy RAIS+cooperados, seção+nota fixa). Próximo: /gsd-plan-phase 2. ANTES: Fase 1 completa via scraper (commits 0ea18ee, ac83138).
+Stopped at: /gsd-plan-phase 2 --auto INTERROMPIDO por limite de sessão durante o pattern-mapper. RESEARCH.md concluída e commitada (dce8e9b) — Censo 2022 SIDRA tabela 10261 (informalidade 27/27 reais), PNAD só UF-SP (contexto regional), RAIS via basedosdados.br_me_rais CNAEs resíduos 2023. FALTA: pattern-map (opcional) + planner + plan-checker → PLAN.md. Decisão tomada: PULAR UI-SPEC (front vanilla, decisões D-08/09/10 já no CONTEXT). Nyquist OFF, security ON (planner inclui threat_model), MVP mode ON (fatias verticais). Retomar com: /gsd-plan-phase 2 (RESEARCH.md já existe → pula pesquisa).
+ANTES: Fase 2 context (be781f4); Fase 1 completa via scraper (0ea18ee, ac83138).
 
 [HISTÓRICO 01-02] Stopped at: Plano 01-02 — caminho BigQuery DESCARTADO (Base dos Dados só tem SNIS água/esgoto em br_mdr_snis; NÃO tem resíduos sólidos). Auth BigQuery funciona com billing project=residuos-github (não residuos-500302). Usuário optou por SCRAPING do portal SNIS. Investigação do app Yii (app4.cidades.gov.br/serieHistorica/residuosSolidos) em andamento.
 
