@@ -5,7 +5,7 @@ gerado faz o GitHub Pages funcionar sem rebuild no servidor.
 """
 from __future__ import annotations
 import json
-from datetime import date
+import os
 from pathlib import Path
 import polars as pl
 
@@ -58,7 +58,7 @@ def to_payload(region_key: str, region_meta: dict, df: pl.DataFrame,
             "regiao_key": region_key,
             "regiao_nome": region_meta["nome"],
             "destaque": region_meta.get("destaque"),
-            "gerado_em": date.today().isoformat(),
+            "gerado_em": os.environ.get("BUILD_DATE", "local")[:10],
             "fonte_baseline": "SNIS/SINISA, PMGIRS, IBGE, transparência municipal",
             "aviso": ("Baseline = dado público (defasagem anual do SNIS). "
                       "Simulador = projeção de modelo; calibre antes de publicar."),
