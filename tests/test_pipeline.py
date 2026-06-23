@@ -24,9 +24,12 @@ def test_build_offline_gera_dados():
     assert soro["flag"] == "real"
     assert soro["rsu_t_ano"] == 228000
     assert soro["organico_t_ano"] == pytest.approx(228000 * 0.48, rel=1e-3)  # gravimetria local 0.48, per D-12
-    # pendentes existem e não inventam número
+    # Baseline real da RMS: SNIS-RS 2022 raspado da Série Histórica oficial
+    # cobre os 25 municípios restantes; com Sorocaba+Porto Feliz, os 27 têm dado.
+    real = df.filter(df["flag"] == "real")
+    assert real.height >= 25
+    # Invariante sagrado (D-11): município pendente nunca inventa número.
     pend = df.filter(df["flag"] == "pendente")
-    assert pend.height >= 20
     assert pend["rsu_t_ano"].null_count() == pend.height
 
 
