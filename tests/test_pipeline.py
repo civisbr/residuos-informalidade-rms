@@ -180,3 +180,62 @@ def test_informalidade_pendente_honesto():
     assert row["flag_informalidade"] == "pendente", (
         "Invariante sagrada: município sem taxa de informalidade → flag='pendente', nunca inventa número"
     )
+
+
+# ---------------------------------------------------------------------------
+# Fase 2 — Plano 02-02: build_region() com joins de informalidade + proxy
+# ---------------------------------------------------------------------------
+
+def test_build_region_com_informalidade():
+    """02-02 T1: build_region() aceita informalidade+rais_residuos e produz colunas corretas."""
+    import os
+    os.chdir(ROOT)
+    df_ibge = ibge.load(ROOT)
+    df_snis = snis.load(ROOT)
+    df_inf = ibge_informalidade.load(ROOT)
+    df_rais = rais.load(ROOT)
+
+    df = transform.build_region(
+        REGIONS["rms"]["municipios"], df_ibge, df_snis, df_inf, df_rais, COEF
+    )
+
+    assert df.height == 27, f"Esperado 27 municípios, got {df.height}"
+    assert "taxa_informalidade_pct" in df.columns, "taxa_informalidade_pct ausente"
+    assert "flag_informalidade" in df.columns, "flag_informalidade ausente"
+    assert "proxy_formalizacao" in df.columns, "proxy_formalizacao ausente"
+    assert "flag_proxy" in df.columns, "flag_proxy ausente"
+    # Invariante: nenhum município tem flag_informalidade null (Censo 2022 cobre os 27)
+    assert df["flag_informalidade"].null_count() == 0, (
+        "flag_informalidade não deve ter nulos — todos os 27 têm dado do Censo 2022"
+    )
+    # taxa_informalidade_pct não deve ser null para os 27 (Censo cobre todos)
+    assert df["taxa_informalidade_pct"].null_count() == 0, (
+        "taxa_informalidade_pct não deve ter nulos com CSV de snapshot completo"
+    )
+    # Sorocaba: formais=745 > 0 → proxy não é null (D-07 permite formais>0 com cooperados null)
+    soro = df.filter(df["key"] == "sorocaba").to_dicts()[0]
+    assert soro["flag_informalidade"] == "real", "Sorocaba deve ter flag_informalidade=real"
+    assert soro["proxy_formalizacao"] is not None, (
+        "Sorocaba formais=745 → proxy calculável mesmo com cooperados null (D-07)"
+    )
+
+
+def test_region_totals_taxa_inf_media():
+    """02-02 T1: region_totals() calcula taxa_inf_media_rms ponderada por total_ocupados."""
+    import os
+    os.chdir(ROOT)
+    df_ibge = ibge.load(ROOT)
+    df_snis = snis.load(ROOT)
+    df_inf = ibge_informalidade.load(ROOT)
+    df_rais = rais.load(ROOT)
+
+    df = transform.build_region(
+        REGIONS["rms"]["municipios"], df_ibge, df_snis, df_inf, df_rais, COEF
+    )
+    totals = transform.region_totals(df)
+
+    assert "taxa_inf_media_rms" in totals, "taxa_inf_media_rms ausente em region_totals()"
+    taxa = totals["taxa_inf_media_rms"]
+    assert taxa is not None, "taxa_inf_media_rms não deve ser None com dados completos"
+    # RMS como um todo tem taxa entre 10% e 50% (sanidade)
+    assert 10 < taxa < 50, f"taxa_inf_media_rms fora do intervalo esperado: {taxa}"
