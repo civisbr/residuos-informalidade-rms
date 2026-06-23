@@ -25,8 +25,9 @@ See: .planning/PROJECT.md (updated 2026-06-21)
 ## Current Position
 
 Phase: 1 (Baseline real da RMS) — ✅ COMPLETE (2026-06-23): 27/27 municípios com dado SNIS-RS real, 0 inventados
-Plan: 2 of 2 concluídos
-Status: Pronto para iniciar a Phase 2 (sem CONTEXT.md ainda → discuss-phase recomendado)
+Phase: 2 (Camada de informalidade) — CONTEXT capturado (2026-06-23). Pronto para planejar.
+Plan: Fase 1 (2/2) concluída; Fase 2 sem plans ainda
+Status: Próximo → /gsd-plan-phase 2 (ou /gsd-plan-phase --research-phase 2 para investigar fontes Censo/PNAD/RAIS antes)
 Last activity: 2026-06-23
 
 Progress: [████░░░░░░░░░░░░░░░░░░] 20% (1/5 fases)
@@ -86,7 +87,7 @@ From `.planning/codebase/CONCERNS.md`, relevantes às próximas fases:
 ## Session Continuity
 
 Last session: 2026-06-23
-Stopped at: FASE 1 COMPLETA. Plano 01-02 concluído via scraper (scrape_snis.py). Build 27/27 reais, testes verdes, commits 0ea18ee (código/dados) + ac83138 (docs). Próximo: Phase 2 (Camada de informalidade) — não tem CONTEXT.md, sugerir /gsd-discuss-phase 2.
+Stopped at: Fase 2 context gathered. CONTEXT.md + DISCUSSION-LOG escritos e commitados (be781f4). Decisões INFO-01..04 capturadas (Censo+PNAD, informalidade geral+lente catador, proxy RAIS+cooperados, seção+nota fixa). Próximo: /gsd-plan-phase 2. ANTES: Fase 1 completa via scraper (commits 0ea18ee, ac83138).
 
 [HISTÓRICO 01-02] Stopped at: Plano 01-02 — caminho BigQuery DESCARTADO (Base dos Dados só tem SNIS água/esgoto em br_mdr_snis; NÃO tem resíduos sólidos). Auth BigQuery funciona com billing project=residuos-github (não residuos-500302). Usuário optou por SCRAPING do portal SNIS. Investigação do app Yii (app4.cidades.gov.br/serieHistorica/residuosSolidos) em andamento.
 
