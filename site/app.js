@@ -55,6 +55,7 @@ function buildRegionStrip() {
     ["Orgânico estimado", `${fmt(t.organico_t_ano)}<small> t/ano</small>`],
     ["Reciclado", `${fmt(t.reciclado_t_ano)}<small> t/ano</small>`],
     ["Cooperados mapeados", `${fmt(t.cooperados)}`],
+    ["Informalidade média RMS", t.taxa_inf_media_rms != null ? `${fmt(t.taxa_inf_media_rms, 1)}<small>%</small>` : "—"],
     ["População", `${fmt(t.populacao)}`],
   ];
   $("regionStrip").innerHTML = cells.map(([l, v]) =>
@@ -84,6 +85,7 @@ function selectCity(nome) {
     ? `pop. ~${fmt(CITY.populacao)} hab` : "população a levantar";
   renderFlow();
   renderKpis();
+  renderInformalidade();
   recalc();
 }
 
@@ -148,6 +150,62 @@ function renderKpis() {
     cell("Custo coleta+aterro", c.custo_mensal_rs != null ? "R$" + fmt(c.custo_mensal_rs / 1e6, 1) : "—", c.custo_mensal_rs != null ? " mi/mês" : "", "convencional + disposição", c.custo_mensal_rs != null ? f : "pendente"),
     cell("Orgânico ao aterro", has ? "~" + fmt(c.organico_t_ano / 1000, 1) : "—", has ? " mil t/ano" : "", `fração orgânica (${COEF.composicao.organico * 100}%)`, has ? "estimativa" : "pendente"),
   ].join("");
+}
+
+function renderInformalidade() {
+  const c = CITY;
+  const tag = f => f === "real" ? `<span class="tag real">real</span>` :
+    f === "estimativa" ? `<span class="tag est">estim.</span>` : `<span class="tag pend">pendente</span>`;
+  const cell = (lab, val, u, note, f) =>
+    `<div class="kpi${f === 'pendente' ? ' pend' : ''}">
+       <div class="k-lab">${lab} ${tag(f)}</div>
+       <div class="k-val mono">${val}<small>${u}</small></div>
+       <div class="k-note">${note}</div></div>`;
+
+  $("infTags").innerHTML = `<span class="tag real">Censo 2022</span>`;
+
+  const flagInf = c.flag_informalidade || "pendente";
+  const taxaVal = c.taxa_informalidade_pct != null
+    ? fmt(c.taxa_informalidade_pct, 1) + " %"
+    : "—";
+  const taxaNota = c.taxa_informalidade_pct != null
+    ? fmt(c.informais) + " de " + fmt(c.total_ocupados) + " ocupados (Censo 2022)"
+    : "a levantar";
+
+  const flagFormais = c.formais_residuos != null ? "real" : "pendente";
+  const formaisVal = c.formais_residuos != null ? fmt(c.formais_residuos) : "—";
+
+  const flagProxy = c.flag_proxy || "pendente";
+  const proxyVal = c.proxy_formalizacao != null
+    ? (c.proxy_formalizacao * 100).toFixed(1) + "%"
+    : "—";
+  const proxyNota = c.proxy_formalizacao != null
+    ? fmt(c.formais_residuos) + " formais + " + fmt(c.cooperados || 0) + " cooperados"
+    : "sem dado suficiente (D-07)";
+
+  $("kpisInf").innerHTML = [
+    cell("Taxa de informalidade", taxaVal, "", taxaNota, flagInf),
+    cell("Empregos formais — setor resíduos", formaisVal, "", "RAIS 2023 · CNAEs 3811–3900", flagFormais),
+    cell("Grau de formalização", proxyVal, "", proxyNota, flagProxy),
+  ].join("");
+
+  $("infSubcount").innerHTML =
+    `<b>Nota sobre subcontagem de catadores:</b> As bases oficiais (SNIS e Censo 2022)
+     subcontam a população catadora informal — trate os números como piso, não total.
+     O catador que não está em cooperativa nem em vínculo formal registrado não aparece
+     nestas estatísticas.`;
+
+  const pnad = DATA.meta.pnad_contexto_regional;
+  if (pnad) {
+    $("pnadRegional").innerHTML =
+      `<div class="caveat" style="margin-top:8px">Contexto regional
+       <span class="tag est" style="margin:0 4px">estimativa</span>
+       Estado de SP (estimativa regional), ${pnad.periodo} —
+       taxa de informalidade ${fmt(pnad.taxa_informalidade_pct, 1)}%
+       (fonte: PNAD Contínua)</div>`;
+  } else {
+    $("pnadRegional").innerHTML = "";
+  }
 }
 
 // ---- simulador: espelha pipeline/model.py ----
