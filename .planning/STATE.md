@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: phase_complete
-last_updated: "2026-06-23T00:00:00.000Z"
-last_activity: 2026-06-23
+status: executing
+last_updated: "2026-06-23T11:47:00Z"
+last_activity: 2026-06-23 -- Phase 02 Plan 01 completed (fontes informalidade)
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 5
+  completed_plans: 3
   percent: 20
 ---
 
@@ -20,15 +20,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-21)
 
 **Core value:** Credibilidade do dado — nunca apresentar projeção como medição, nunca inventar número.
-**Current focus:** Phase 1 COMPLETA → próximo: Phase 2 (Camada de informalidade)
+**Current focus:** Phase 02 — camada-de-informalidade
 
 ## Current Position
 
-Phase: 1 (Baseline real da RMS) — ✅ COMPLETE (2026-06-23): 27/27 municípios com dado SNIS-RS real, 0 inventados
-Phase: 2 (Camada de informalidade) — PLANEJADA. 3 planos (waves 1→2→3), plan-checker PASS.
-Plan: Fase 1 (2/2) concluída; Fase 2 com 3 planos prontos (0/3 executados)
-Status: Pronto para executar → /gsd-execute-phase 2
-Last activity: 2026-06-23
+Phase: 02 (camada-de-informalidade) — EXECUTING
+Phase: 2 (Camada de informalidade) — EXECUTANDO. 3 planos (waves 1→2→3). Plan 01 COMPLETO.
+Plan: 2 of 3
+Status: Executing Phase 02 — Plan 02-01 complete, next: 02-02
+Last activity: 2026-06-23 -- Phase 02 Plan 01 completed (fontes informalidade)
 
 Progress: [████░░░░░░░░░░░░░░░░░░] 20% (1/5 fases)
 
@@ -53,6 +53,7 @@ Progress: [████░░░░░░░░░░░░░░░░░░] 2
 
 *Updated after each plan completion*
 | Phase 01-baseline-real-da-rms P01 | 260 | 3 tasks | 8 files |
+| Phase 02-camada-de-informalidade P01 | 5 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,9 @@ Recent decisions affecting current work:
 - Init: Roadmap GSD espelha 1:1 as milestones do GSD.md (M1→Fase 1 … M5→Fase 5); M0 validado.
 - Init: v1 = M1–M5 completo; execução sequencial; pesquisa de domínio pulada.
 - Init: `commit_docs: false` e `CLAUDE.md` preservado (não regenerado) — `.planning`/`CLAUDE.md`/`GSD.md` são gitignored.
+- 02-01: chave de junção = slug(municipio) = key; NÃO codigo_ibge (pitfall RESEARCH).
+- 02-01: RAIS 0 é dado real (RAIS tem cobertura completa do setor formal).
+- 02-01: PNAD sem coluna municipio — invariante D-02; vai em meta.pnad_contexto_regional.
 
 ### Pending Todos
 
@@ -87,13 +91,14 @@ From `.planning/codebase/CONCERNS.md`, relevantes às próximas fases:
 ## Session Continuity
 
 Last session: 2026-06-23
-Stopped at: Fase 2 PLANEJADA. 3 planos criados+commitados (4468b52), plan-checker PASS. pattern-mapper pulado (research já leu o código); UI-SPEC pulado (front vanilla). 3 warnings do checker a observar na execução: (1) assinatura build_region() muda p/ 6 args → atualizar test_build_offline_gera_dados; (2) conflito coluna 'fonte' no join → renomear p/ fonte_inf (já na action); (3) verify do 02-03 é grep estrutural → checkpoint visual compensa. Próximo: /gsd-execute-phase 2.
-Plano da Fase 2: 02-01 (fontes offline Censo/RAIS/PNAD + CSVs + testes) → 02-02 (pipeline: joins + proxy D-06/D-07 + render + data.json) → 02-03 (painel renderInformalidade + nota fixa D-10 + region-strip; checkpoint visual).
+Stopped at: Phase 02 Plan 01 COMPLETO (3b45012, 29e1943). 3 CSVs + 3 módulos + 6 testes. 9 passed. Build OK.
+Plano da Fase 2: ~~02-01 COMPLETO~~ → 02-02 (pipeline: joins + proxy D-06/D-07 + render + data.json) → 02-03 (painel renderInformalidade + nota fixa D-10 + region-strip; checkpoint visual).
 ANTES: RESEARCH (dce8e9b), context (be781f4); Fase 1 completa via scraper (0ea18ee, ac83138).
 
 [HISTÓRICO 01-02] Stopped at: Plano 01-02 — caminho BigQuery DESCARTADO (Base dos Dados só tem SNIS água/esgoto em br_mdr_snis; NÃO tem resíduos sólidos). Auth BigQuery funciona com billing project=residuos-github (não residuos-500302). Usuário optou por SCRAPING do portal SNIS. Investigação do app Yii (app4.cidades.gov.br/serieHistorica/residuosSolidos) em andamento.
 
 ACHADOS do scraping — SNIS Série Histórica (app4.cidades.gov.br/serieHistorica), app Yii + jqGrid:
+
 - SEM CSRF. search-id gerado no CLIENTE (timestamp-random). Endpoints abertos (só precisa GET prévio p/ cookie de sessão + header X-Requested-With).
 - CONTROLADOR p/ resíduos por município: `consolidadoMunicipio`. Campos:
   - tipo_info: "3"=resíduos sólidos (1=todos,2=água/esgoto,4=ambos)
@@ -115,4 +120,5 @@ ACHADOS do scraping — SNIS Série Histórica (app4.cidades.gov.br/serieHistori
 - DECISÃO INTEGRIDADE: cooperados via CA002/CA003 é não-confiável (Sorocaba ca003=1.78, fracionário) -> deixar cooperados=null (honesto). município sem nenhum dado RS -> pendente.
 - Próximo: construir scripts/scrape_snis.py, rodar -> data/raw/snis/snis_rms_sp.csv (25 munic, excl sorocaba+porto feliz), validar build 27, ajustar teste pend.height, 01-02-SUMMARY.md.
 - NOTA ESCOPO: fetch_snis.py (BigQuery) é beco sem saída (BD não tem RS). scrape_snis.py é a semente real de snis.py::refresh() (Fase 4/GEN-02).
+
 Resume file: None
