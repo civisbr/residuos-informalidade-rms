@@ -1,9 +1,14 @@
-"""Extrai o SNIS-RS da Base dos Dados (BigQuery) para os municípios de uma região.
+"""[BECO SEM SAÍDA p/ RESÍDUOS] Extrai SNIS da Base dos Dados (BigQuery).
 
-Por que este script existe: o portal oficial do SNIS (app4.cidades.gov.br) não
-tem API de download pública e, com frequência, fica fora do ar. A Base dos Dados
-espelha o SNIS em BigQuery — fonte citável, consultável por SQL. Este script é a
-semente do `pipeline/sources/snis.py::refresh()` (ver GSD.md, M4 / GEN-02).
+ATENÇÃO: a Base dos Dados só espelha o SNIS de ÁGUA/ESGOTO (dataset
+`br_mdr_snis`: tabelas prestador_agua_esgoto, municipio_agua_esgoto). NÃO há
+tabela de resíduos sólidos (manejo de RSU). Para o baseline de resíduos, use
+`scripts/scrape_snis.py` (Série Histórica oficial). Este script é mantido apenas
+como referência do caminho BigQuery.
+
+Por que este script existe: a Base dos Dados espelha o SNIS em BigQuery — fonte
+citável, consultável por SQL. Semente do `pipeline/sources/snis.py::refresh()`
+(ver GSD.md, M4 / GEN-02) caso a BD publique resíduos sólidos no futuro.
 
 REGRA SAGRADA (CLAUDE.md): nunca inventar número. Município sem linha no SNIS
 sai como `pendente` (rsu_t_ano vazio). Todo dado real cita sua `fonte`.

@@ -17,10 +17,26 @@ A pipeline é determinística: ela reprocessa o que estiver em `data/raw/snis/`.
 3. Salve como CSV em `data/raw/snis/` (pode ter vários arquivos/anos).
 4. `uv run obs build --region rms` — a pipeline mantém o ano mais recente por município.
 
-## Caminho programático (M4)
-- `basedosdados` espelha o SNIS em tabela consultável (requer projeto GCP).
-- Alternativa: scraping/download direto da série histórica do SNIS.
-- Implementar em `pipeline/sources/snis.py::refresh()` e documentar aqui.
+## Caminho programático (recomendado) — `scripts/scrape_snis.py`
+O SNIS-RS (resíduos sólidos) **não** está na Base dos Dados (que só espelha
+água/esgoto). O caminho que funciona é o backend jqGrid da Série Histórica:
+
+```bash
+uv run python scripts/scrape_snis.py --build --region rms \
+    --exclude sorocaba "porto feliz"   # já têm dado citável no sample
+# -> data/raw/snis/snis_rms_sp.csv (ano mais recente; 1 município por linha)
+uv run obs build --region rms && uv run pytest -q
+```
+
+O script faz engenharia reversa do controlador `consolidadoMunicipio` (tipo_info=3),
+resolve códigos de 6 dígitos por município, monta a busca (getGridConfig assíncrono
++ polling), lê o grid (getGridData) e mapeia cada coluna pelo `colModel`. Cada linha
+cita a `fonte` com os campos SNIS usados (CO116/CO117/CO142/CS048, CS026, IN031_RS,
+IN030_RS, FN220) e a data de download. É a semente de `snis.py::refresh()` (M4/GEN-02).
+
+> `scripts/fetch_snis.py` (via Base dos Dados/BigQuery) é um **beco sem saída**
+> para resíduos sólidos — a BD não publica a tabela de RSU. Mantido só como
+> referência; use `scrape_snis.py`.
 
 ## Gravimetria (composição do RSU)
 A fração orgânica padrão (51%) é média nacional. Para Sorocaba, o PMGIRS traz
