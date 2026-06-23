@@ -18,10 +18,10 @@ mapeia a uma fase do roadmap (1 milestone = 1 fase).
 
 ### Informalidade (M2 — Camada de informalidade)
 
-- [ ] **INFO-01**: Fonte `sources/ibge_informalidade.py` lê ocupação informal (PNAD/Censo) por município
-- [ ] **INFO-02**: Proxy de formalização (RAIS/CAGED vs. catadores em cooperativa) calculado
-- [ ] **INFO-03**: Painel mostra card/seção de informalidade por município, com flag de qualidade, separado de estimativa
-- [ ] **INFO-04**: Nota explícita de subcontagem da população catadora exibida no painel
+- [x] **INFO-01**: Fonte `sources/ibge_informalidade.py` lê ocupação informal (PNAD/Censo) por município
+- [x] **INFO-02**: Proxy de formalização (RAIS/CAGED vs. catadores em cooperativa) calculado
+- [x] **INFO-03**: Painel mostra card/seção de informalidade por município, com flag de qualidade, separado de estimativa
+- [x] **INFO-04**: Nota explícita de subcontagem da população catadora exibida no painel
 
 ### Deploy (M3 — Deploy contínuo no GitHub Pages)
 
@@ -71,10 +71,10 @@ Mapeamento 1:1 — cada milestone do GSD.md vira uma fase.
 | BASE-03 | Phase 1 | Complete |
 | BASE-04 | Phase 1 | Pending |
 | BASE-05 | Phase 1 | Complete |
-| INFO-01 | Phase 2 | Pending |
-| INFO-02 | Phase 2 | Pending |
-| INFO-03 | Phase 2 | Pending |
-| INFO-04 | Phase 2 | Pending |
+| INFO-01 | Phase 2 | Complete |
+| INFO-02 | Phase 2 | Complete |
+| INFO-03 | Phase 2 | Complete |
+| INFO-04 | Phase 2 | Complete |
 | DEPLOY-01 | Phase 3 | Pending |
 | DEPLOY-02 | Phase 3 | Pending |
 | DEPLOY-03 | Phase 3 | Pending |

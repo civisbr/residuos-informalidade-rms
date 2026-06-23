@@ -18,7 +18,7 @@ estar verde.
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Baseline real da RMS** - 27 municípios com dado SNIS real ou pendente honesto, fonte citada
-- [ ] **Phase 2: Camada de informalidade** - indicador de informalidade por município, com fonte e flag
+- [x] **Phase 2: Camada de informalidade** - indicador de informalidade por município, com fonte e flag (completed 2026-06-23)
 - [ ] **Phase 3: Deploy contínuo no GitHub Pages** - push reconstrói e publica o painel
 - [ ] **Phase 4: Generalizar para qualquer cidade BR** - terceiro gera o painel de outra região só editando regions.yml
 - [ ] **Phase 5: Camada viva (operacional)** - telemetria real sobreposta ao baseline público
@@ -71,11 +71,11 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Integração pipeline: transform.build_region() com joins + proxy D-06/D-07; render.to_payload() com campos de informalidade + meta.pnad; cli.py atualizado; data.json regenerado
+- [x] 02-02-PLAN.md — Integração pipeline: transform.build_region() com joins + proxy D-06/D-07; render.to_payload() com campos de informalidade + meta.pnad; cli.py atualizado; data.json regenerado
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 02-03-PLAN.md — Painel: renderInformalidade() em app.js + slots index.html + nota fixa D-10 + célula region-strip + verificação visual
+- [x] 02-03-PLAN.md — Painel: renderInformalidade() em app.js + slots index.html + nota fixa D-10 + célula region-strip + verificação visual
 
 ### Phase 3: Deploy contínuo no GitHub Pages
 
@@ -142,7 +142,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Baseline real da RMS | 2/2 | Complete | 2026-06-23 |
-| 2. Camada de informalidade | 1/3 | In progress | - |
+| 2. Camada de informalidade | 3/3 | Complete   | 2026-06-23 |
 | 3. Deploy contínuo no GitHub Pages | 0/TBD | Not started | - |
 | 4. Generalizar para qualquer cidade BR | 0/TBD | Not started | - |
 | 5. Camada viva (operacional) | 0/TBD | Not started | - |

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-last_updated: "2026-06-23T11:47:00Z"
-last_activity: 2026-06-23 -- Phase 02 Plan 01 completed (fontes informalidade)
+status: verifying
+last_updated: "2026-06-23T12:01:43.198Z"
+last_activity: 2026-06-23
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 5
-  completed_plans: 3
-  percent: 20
+  completed_plans: 5
+  percent: 40
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-06-21)
 
 Phase: 02 (camada-de-informalidade) — EXECUTING
 Phase: 2 (Camada de informalidade) — EXECUTANDO. 3 planos (waves 1→2→3). Plan 01 COMPLETO.
-Plan: 2 of 3
-Status: Executing Phase 02 — Plan 02-01 complete, next: 02-02
-Last activity: 2026-06-23 -- Phase 02 Plan 01 completed (fontes informalidade)
+Plan: 3 of 3
+Status: Phase complete — ready for verification
+Last activity: 2026-06-23
 
-Progress: [████░░░░░░░░░░░░░░░░░░] 20% (1/5 fases)
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Progress: [████░░░░░░░░░░░░░░░░░░] 2
 *Updated after each plan completion*
 | Phase 01-baseline-real-da-rms P01 | 260 | 3 tasks | 8 files |
 | Phase 02-camada-de-informalidade P01 | 5 | 2 tasks | 7 files |
+| Phase 02-camada-de-informalidade P03 | 8 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -68,6 +69,12 @@ Recent decisions affecting current work:
 - 02-01: chave de junção = slug(municipio) = key; NÃO codigo_ibge (pitfall RESEARCH).
 - 02-01: RAIS 0 é dado real (RAIS tem cobertura completa do setor formal).
 - 02-01: PNAD sem coluna municipio — invariante D-02; vai em meta.pnad_contexto_regional.
+- 02-02: build_region() assinatura extendida com informalidade + rais_residuos passados explicitamente.
+- 02-02: fonte_inf renomeada antes do join para evitar conflito com coluna fonte do SNIS (T-02-09).
+- 02-02: taxa_inf_media_rms=28.8% (média ponderada por total_ocupados) em region_totals().
+- 02-02: pnad_contexto_regional em meta, nunca em municipios[] — invariante D-02 implementada.
+- [Phase ?]: note D-10 always visible
+- [Phase ?]: PNAD via meta not CITY
 
 ### Pending Todos
 
@@ -90,9 +97,9 @@ From `.planning/codebase/CONCERNS.md`, relevantes às próximas fases:
 
 ## Session Continuity
 
-Last session: 2026-06-23
-Stopped at: Phase 02 Plan 01 COMPLETO (3b45012, 29e1943). 3 CSVs + 3 módulos + 6 testes. 9 passed. Build OK.
-Plano da Fase 2: ~~02-01 COMPLETO~~ → 02-02 (pipeline: joins + proxy D-06/D-07 + render + data.json) → 02-03 (painel renderInformalidade + nota fixa D-10 + region-strip; checkpoint visual).
+Last session: 2026-06-23T12:01:22.920Z
+Stopped at: Phase 02 Plan 02 COMPLETO (5a03026, 1404b68, 6ed5474, d329239). 12 testes passando. data.json com informalidade (27/27 municípios).
+Plano da Fase 2: ~~02-01 COMPLETO~~ → ~~02-02 COMPLETO~~ → 02-03 (painel renderInformalidade + nota fixa D-10 + region-strip; checkpoint visual).
 ANTES: RESEARCH (dce8e9b), context (be781f4); Fase 1 completa via scraper (0ea18ee, ac83138).
 
 [HISTÓRICO 01-02] Stopped at: Plano 01-02 — caminho BigQuery DESCARTADO (Base dos Dados só tem SNIS água/esgoto em br_mdr_snis; NÃO tem resíduos sólidos). Auth BigQuery funciona com billing project=residuos-github (não residuos-500302). Usuário optou por SCRAPING do portal SNIS. Investigação do app Yii (app4.cidades.gov.br/serieHistorica/residuosSolidos) em andamento.
