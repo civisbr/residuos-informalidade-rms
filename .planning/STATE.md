@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-last_updated: "2026-06-21T23:22:25.545Z"
-last_activity: 2026-06-21
+status: phase_complete
+last_updated: "2026-06-23T00:00:00.000Z"
+last_activity: 2026-06-23
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
-  percent: 0
+  completed_plans: 2
+  percent: 20
 ---
 
 # Project State
@@ -20,16 +20,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-21)
 
 **Core value:** Credibilidade do dado — nunca apresentar projeção como medição, nunca inventar número.
-**Current focus:** Phase 1 — Baseline real da RMS
+**Current focus:** Phase 1 COMPLETA → próximo: Phase 2 (Camada de informalidade)
 
 ## Current Position
 
-Phase: 1 (Baseline real da RMS) — EXECUTING
-Plan: 2 of 2
-Status: Ready to execute
-Last activity: 2026-06-21
+Phase: 1 (Baseline real da RMS) — ✅ COMPLETE (2026-06-23): 27/27 municípios com dado SNIS-RS real, 0 inventados
+Plan: 2 of 2 concluídos
+Status: Pronto para iniciar a Phase 2 (sem CONTEXT.md ainda → discuss-phase recomendado)
+Last activity: 2026-06-23
 
-Progress: [█████░░░░░] 50%
+Progress: [████░░░░░░░░░░░░░░░░░░] 20% (1/5 fases)
 
 ## Performance Metrics
 
@@ -86,7 +86,9 @@ From `.planning/codebase/CONCERNS.md`, relevantes às próximas fases:
 ## Session Continuity
 
 Last session: 2026-06-23
-Stopped at: Plano 01-02 — caminho BigQuery DESCARTADO (Base dos Dados só tem SNIS água/esgoto em br_mdr_snis; NÃO tem resíduos sólidos). Auth BigQuery funciona com billing project=residuos-github (não residuos-500302). Usuário optou por SCRAPING do portal SNIS. Investigação do app Yii (app4.cidades.gov.br/serieHistorica/residuosSolidos) em andamento.
+Stopped at: FASE 1 COMPLETA. Plano 01-02 concluído via scraper (scrape_snis.py). Build 27/27 reais, testes verdes, commits 0ea18ee (código/dados) + ac83138 (docs). Próximo: Phase 2 (Camada de informalidade) — não tem CONTEXT.md, sugerir /gsd-discuss-phase 2.
+
+[HISTÓRICO 01-02] Stopped at: Plano 01-02 — caminho BigQuery DESCARTADO (Base dos Dados só tem SNIS água/esgoto em br_mdr_snis; NÃO tem resíduos sólidos). Auth BigQuery funciona com billing project=residuos-github (não residuos-500302). Usuário optou por SCRAPING do portal SNIS. Investigação do app Yii (app4.cidades.gov.br/serieHistorica/residuosSolidos) em andamento.
 
 ACHADOS do scraping — SNIS Série Histórica (app4.cidades.gov.br/serieHistorica), app Yii + jqGrid:
 - SEM CSRF. search-id gerado no CLIENTE (timestamp-random). Endpoints abertos (só precisa GET prévio p/ cookie de sessão + header X-Requested-With).
