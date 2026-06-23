@@ -242,3 +242,32 @@ def test_region_totals_taxa_inf_media():
     assert taxa is not None, "taxa_inf_media_rms não deve ser None com dados completos"
     # RMS como um todo tem taxa entre 10% e 50% (sanidade)
     assert 10 < taxa < 50, f"taxa_inf_media_rms fora do intervalo esperado: {taxa}"
+
+
+def test_payload_tem_informalidade():
+    """02-02 T2: data.json gerado contém campos de informalidade por município e PNAD em meta."""
+    import json
+    data_path = ROOT / "site" / "data.json"
+    assert data_path.exists(), "site/data.json deve existir — rodar 'uv run obs build --region rms'"
+    d = json.loads(data_path.read_text())
+
+    # Campos obrigatórios em municipios[0]
+    m = d["municipios"][0]
+    assert "taxa_informalidade_pct" in m, f"taxa_informalidade_pct ausente em municipios[0]"
+    assert "flag_informalidade" in m, f"flag_informalidade ausente em municipios[0]"
+    assert "proxy_formalizacao" in m, f"proxy_formalizacao ausente em municipios[0]"
+    assert "flag_proxy" in m, f"flag_proxy ausente em municipios[0]"
+
+    # PNAD apenas em meta (D-02) — nunca em municipios[]
+    pnad = d["meta"].get("pnad_contexto_regional")
+    assert pnad is not None, "pnad_contexto_regional ausente em meta"
+    assert pnad["flag"] == "estimativa", f"PNAD flag esperado 'estimativa', got '{pnad['flag']}'"
+    assert "municipio" not in pnad, "PNAD não deve ter campo 'municipio' (D-02)"
+
+    for mun in d["municipios"]:
+        assert "pnad_contexto_regional" not in mun, (
+            f"PNAD não deve aparecer em municipios[] — encontrada em {mun['nome']}"
+        )
+
+    # taxa_inf_media_rms em totais
+    assert "taxa_inf_media_rms" in d["totais"], "taxa_inf_media_rms ausente em totais"
