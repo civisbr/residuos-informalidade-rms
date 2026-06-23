@@ -1,5 +1,7 @@
 # Observatório de Resíduos & Informalidade
 
+[![Build](https://github.com/civisbr/residuos-informalidade-rms/actions/workflows/build.yml/badge.svg)](https://github.com/civisbr/residuos-informalidade-rms/actions/workflows/build.yml) **[Ver painel ao vivo →](https://civisbr.github.io/residuos-informalidade-rms/)**
+
 > Repositório: **`residuos-informalidade-rms`** · CivisBR · referência: Região Metropolitana de Sorocaba (RMS)
 
 Painel **vivo e open-source** que mostra, por município brasileiro, para onde vai
