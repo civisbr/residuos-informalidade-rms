@@ -19,7 +19,10 @@ def test_rms_tem_27_municipios():
 def test_build_offline_gera_dados():
     import os
     os.chdir(ROOT)
-    df = transform.build_region(REGIONS["rms"]["municipios"], ibge.load(ROOT), snis.load(ROOT), COEF)
+    df = transform.build_region(
+        REGIONS["rms"]["municipios"], ibge.load(ROOT), snis.load(ROOT),
+        ibge_informalidade.load(ROOT), rais.load(ROOT), COEF
+    )
     assert df.height == 27
     # Sorocaba tem dado real
     soro = df.filter(df["key"] == "sorocaba").to_dicts()[0]
