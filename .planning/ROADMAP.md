@@ -142,7 +142,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Baseline real da RMS | 2/2 | Complete | 2026-06-23 |
-| 2. Camada de informalidade | 3/3 | Complete   | 2026-06-23 |
+| 2. Camada de informalidade | 3/3 | Complete    | 2026-06-23 |
 | 3. Deploy contínuo no GitHub Pages | 0/TBD | Not started | - |
 | 4. Generalizar para qualquer cidade BR | 0/TBD | Not started | - |
 | 5. Camada viva (operacional) | 0/TBD | Not started | - |
