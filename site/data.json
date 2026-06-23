@@ -5,7 +5,15 @@
     "destaque": "Sorocaba",
     "gerado_em": "2026-06-23",
     "fonte_baseline": "SNIS/SINISA, PMGIRS, IBGE, transparência municipal",
-    "aviso": "Baseline = dado público (defasagem anual do SNIS). Simulador = projeção de modelo; calibre antes de publicar."
+    "aviso": "Baseline = dado público (defasagem anual do SNIS). Simulador = projeção de modelo; calibre antes de publicar.",
+    "pnad_contexto_regional": {
+      "uf": "SP",
+      "periodo": "2026T1",
+      "taxa_informalidade_pct": 30.0,
+      "flag": "estimativa",
+      "ambito": "Estado de São Paulo",
+      "fonte": "PNAD Contínua Trimestral, IBGE, SIDRA t/4093, n3/35, v/12466, p/last. ESTIMATIVA REGIONAL — não representativa no nível municipal. https://sidra.ibge.gov.br/tabela/4093"
+    }
   },
   "coeficientes": {
     "composicao": {
@@ -44,7 +52,8 @@
     "aterro_t_ano": 617339.0583500001,
     "reciclado_t_ano": 29504.9,
     "cooperados": 157.0,
-    "populacao": 1615000.0
+    "populacao": 1615000.0,
+    "taxa_inf_media_rms": 28.787982631428992
   },
   "municipios": [
     {
@@ -64,7 +73,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 40833.33,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 24.7,
+      "flag_informalidade": "real",
+      "total_ocupados": 2815,
+      "informais": 696,
+      "ano_censo": 2022,
+      "formais_residuos": 0,
+      "ano_rais": 2023,
+      "proxy_formalizacao": null,
+      "flag_proxy": "pendente",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Boituva",
@@ -83,7 +102,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 1402103.11,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 29.1,
+      "flag_informalidade": "real",
+      "total_ocupados": 26701,
+      "informais": 7768,
+      "ano_censo": 2022,
+      "formais_residuos": 128,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Capela do Alto",
@@ -102,7 +131,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 212216.65,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 42.5,
+      "flag_informalidade": "real",
+      "total_ocupados": 8556,
+      "informais": 3634,
+      "ano_censo": 2022,
+      "formais_residuos": 0,
+      "ano_rais": 2023,
+      "proxy_formalizacao": null,
+      "flag_proxy": "pendente",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Cerquilho",
@@ -121,7 +160,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 427693.28,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 25.6,
+      "flag_informalidade": "real",
+      "total_ocupados": 23320,
+      "informais": 5962,
+      "ano_censo": 2022,
+      "formais_residuos": 2,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Cesário Lange",
@@ -140,7 +189,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 270246.57,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 28.3,
+      "flag_informalidade": "real",
+      "total_ocupados": 8360,
+      "informais": 2368,
+      "ano_censo": 2022,
+      "formais_residuos": 7,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Itapetininga",
@@ -159,7 +218,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 1285341.3,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 27.8,
+      "flag_informalidade": "real",
+      "total_ocupados": 73306,
+      "informais": 20378,
+      "ano_censo": 2022,
+      "formais_residuos": 36,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Jumirim",
@@ -178,7 +247,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 40182.08,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 13.1,
+      "flag_informalidade": "real",
+      "total_ocupados": 1455,
+      "informais": 191,
+      "ano_censo": 2022,
+      "formais_residuos": 0,
+      "ano_rais": 2023,
+      "proxy_formalizacao": null,
+      "flag_proxy": "pendente",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Sarapuí",
@@ -197,7 +276,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 48445.12,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 35.5,
+      "flag_informalidade": "real",
+      "total_ocupados": 4879,
+      "informais": 1733,
+      "ano_censo": 2022,
+      "formais_residuos": 69,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Tatuí",
@@ -216,7 +305,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 1202905.16,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 25.4,
+      "flag_informalidade": "real",
+      "total_ocupados": 57629,
+      "informais": 14611,
+      "ano_censo": 2022,
+      "formais_residuos": 26,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Tietê",
@@ -235,7 +334,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 371791.74,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 22.2,
+      "flag_informalidade": "real",
+      "total_ocupados": 18635,
+      "informais": 4146,
+      "ano_censo": 2022,
+      "formais_residuos": 5,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Alumínio",
@@ -254,7 +363,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 245786.61,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 20.0,
+      "flag_informalidade": "real",
+      "total_ocupados": 7720,
+      "informais": 1547,
+      "ano_censo": 2022,
+      "formais_residuos": 0,
+      "ano_rais": 2023,
+      "proxy_formalizacao": null,
+      "flag_proxy": "pendente",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Araçariguama",
@@ -273,7 +392,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 176875.24,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 28.2,
+      "flag_informalidade": "real",
+      "total_ocupados": 10584,
+      "informais": 2989,
+      "ano_censo": 2022,
+      "formais_residuos": 283,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Ibiúna",
@@ -292,7 +421,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 567476.0,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 43.1,
+      "flag_informalidade": "real",
+      "total_ocupados": 34778,
+      "informais": 14975,
+      "ano_censo": 2022,
+      "formais_residuos": 50,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Itu",
@@ -311,7 +450,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 6749119.18,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 28.3,
+      "flag_informalidade": "real",
+      "total_ocupados": 81701,
+      "informais": 23154,
+      "ano_censo": 2022,
+      "formais_residuos": 540,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Mairinque",
@@ -330,7 +479,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 672012.34,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 26.2,
+      "flag_informalidade": "real",
+      "total_ocupados": 23955,
+      "informais": 6287,
+      "ano_censo": 2022,
+      "formais_residuos": 56,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Porto Feliz",
@@ -349,7 +508,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": 17.0,
       "custo_mensal_rs": null,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 26.9,
+      "flag_informalidade": "real",
+      "total_ocupados": 27479,
+      "informais": 7393,
+      "ano_censo": 2022,
+      "formais_residuos": 25,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 0.5952380952380952,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Salto",
@@ -368,7 +537,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 3878905.74,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 24.4,
+      "flag_informalidade": "real",
+      "total_ocupados": 65712,
+      "informais": 16028,
+      "ano_censo": 2022,
+      "formais_residuos": 380,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "São Roque",
@@ -387,7 +566,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 1088528.22,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 28.3,
+      "flag_informalidade": "real",
+      "total_ocupados": 39145,
+      "informais": 11074,
+      "ano_censo": 2022,
+      "formais_residuos": 24,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Araçoiaba da Serra",
@@ -406,7 +595,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 166016.75,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 33.8,
+      "flag_informalidade": "real",
+      "total_ocupados": 14551,
+      "informais": 4921,
+      "ano_censo": 2022,
+      "formais_residuos": 1,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Iperó",
@@ -425,7 +624,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 340956.12,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 34.4,
+      "flag_informalidade": "real",
+      "total_ocupados": 15845,
+      "informais": 5446,
+      "ano_censo": 2022,
+      "formais_residuos": 82,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Piedade",
@@ -444,7 +653,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 523972.59,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 42.8,
+      "flag_informalidade": "real",
+      "total_ocupados": 26377,
+      "informais": 11301,
+      "ano_censo": 2022,
+      "formais_residuos": 0,
+      "ano_rais": 2023,
+      "proxy_formalizacao": null,
+      "flag_proxy": "pendente",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Pilar do Sul",
@@ -463,7 +682,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 208794.02,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 32.8,
+      "flag_informalidade": "real",
+      "total_ocupados": 13098,
+      "informais": 4294,
+      "ano_censo": 2022,
+      "formais_residuos": 0,
+      "ano_rais": 2023,
+      "proxy_formalizacao": null,
+      "flag_proxy": "pendente",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Salto de Pirapora",
@@ -482,7 +711,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 264927.87,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 33.8,
+      "flag_informalidade": "real",
+      "total_ocupados": 20809,
+      "informais": 7043,
+      "ano_censo": 2022,
+      "formais_residuos": 0,
+      "ano_rais": 2023,
+      "proxy_formalizacao": null,
+      "flag_proxy": "pendente",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Sorocaba",
@@ -501,7 +740,17 @@
       "coleta_seletiva_pop_pct": 14.8,
       "cooperados": 140.0,
       "custo_mensal_rs": 12500000.0,
-      "composicao_fonte": "PMGIRS Sorocaba — SHS Consultoria/Prefeitura de Sorocaba, 2014. Gravimetria: 48% orgânico (Tomo 2, p. 27)"
+      "composicao_fonte": "PMGIRS Sorocaba — SHS Consultoria/Prefeitura de Sorocaba, 2014. Gravimetria: 48% orgânico (Tomo 2, p. 27)",
+      "taxa_informalidade_pct": 28.0,
+      "flag_informalidade": "real",
+      "total_ocupados": 354120,
+      "informais": 99013,
+      "ano_censo": 2022,
+      "formais_residuos": 745,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 0.8418079096045198,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "São Miguel Arcanjo",
@@ -520,7 +769,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 166666.67,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 36.5,
+      "flag_informalidade": "real",
+      "total_ocupados": 15346,
+      "informais": 5596,
+      "ano_censo": 2022,
+      "formais_residuos": 5,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Tapiraí",
@@ -539,7 +798,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 33458.27,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 38.9,
+      "flag_informalidade": "real",
+      "total_ocupados": 3500,
+      "informais": 1363,
+      "ano_censo": 2022,
+      "formais_residuos": 137,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     },
     {
       "nome": "Votorantim",
@@ -558,7 +827,17 @@
       "coleta_seletiva_pop_pct": null,
       "cooperados": null,
       "custo_mensal_rs": 663044.31,
-      "composicao_fonte": "média Brasil (estimativa)"
+      "composicao_fonte": "média Brasil (estimativa)",
+      "taxa_informalidade_pct": 25.7,
+      "flag_informalidade": "real",
+      "total_ocupados": 58512,
+      "informais": 15013,
+      "ano_censo": 2022,
+      "formais_residuos": 17,
+      "ano_rais": 2023,
+      "proxy_formalizacao": 1.0,
+      "flag_proxy": "real",
+      "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     }
   ]
 }

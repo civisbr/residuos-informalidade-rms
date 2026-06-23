@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 import yaml
 
-from .sources import ibge, snis
+from .sources import ibge, snis, ibge_informalidade, rais, pnad_regional
 from . import transform, render
 
 
@@ -27,9 +27,17 @@ def cmd_build(args) -> int:
         return 1
 
     meta = regions[args.region]
-    df = transform.build_region(meta["municipios"], ibge.load(root), snis.load(root), coef)
+
+    # Carregar todas as fontes (offline — determinístico)
+    df_ibge = ibge.load(root)
+    df_snis = snis.load(root)
+    df_inf = ibge_informalidade.load(root)
+    df_rais = rais.load(root)
+    df_pnad = pnad_regional.load(root)
+
+    df = transform.build_region(meta["municipios"], df_ibge, df_snis, df_inf, df_rais, coef)
     totals = transform.region_totals(df)
-    payload = render.to_payload(args.region, meta, df, totals, coef)
+    payload = render.to_payload(args.region, meta, df, totals, coef, pnad_df=df_pnad)
     out = render.write(payload, root)
 
     com = totals["municipios_com_dado"]
@@ -37,6 +45,9 @@ def cmd_build(args) -> int:
     print(f"✓ {out} — {meta['nome']}: {com}/{tot} municípios com dado público")
     print(f"  RSU total: {totals['rsu_t_ano']:,.0f} t/ano · "
           f"orgânico: {totals['organico_t_ano']:,.0f} t/ano")
+    taxa_inf = totals.get("taxa_inf_media_rms")
+    if taxa_inf is not None:
+        print(f"  Informalidade média RMS: {taxa_inf:.1f}% (Censo 2022, ponderado por ocupados)")
     if com < tot:
         print(f"  {tot - com} municípios pendentes — rode o refresh do SNIS "
               f"(scripts/refresh_snis.md)")

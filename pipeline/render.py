@@ -1,7 +1,7 @@
 """Renderização: monta site/data.json — o artefato que o painel consome.
 
 O painel (site/index.html) é estático e lê este JSON. Commitar o data.json
-gerado faz o GitHub Pages funcionar sem build no servidor.
+gerado faz o GitHub Pages funcionar sem rebuild no servidor.
 """
 from __future__ import annotations
 import json
@@ -13,7 +13,7 @@ from . import model
 
 
 def to_payload(region_key: str, region_meta: dict, df: pl.DataFrame,
-               totals: dict, coef: dict) -> dict:
+               totals: dict, coef: dict, pnad_df: pl.DataFrame | None = None) -> dict:
     municipios = []
     for r in df.iter_rows(named=True):
         municipios.append({
@@ -27,7 +27,31 @@ def to_payload(region_key: str, region_meta: dict, df: pl.DataFrame,
             "cooperados": r["cooperados"],
             "custo_mensal_rs": r["custo_mensal_rs"],
             "composicao_fonte": r.get("composicao_fonte"),  # procedência da composição orgânica
+            # Camada de informalidade (Fase 2 — Censo 2022 / RAIS 2023)
+            "taxa_informalidade_pct": r["taxa_informalidade_pct"],
+            "flag_informalidade": r["flag_informalidade"],
+            "total_ocupados": r["total_ocupados"],
+            "informais": r["informais"],
+            "ano_censo": r["ano_censo"],
+            "formais_residuos": r["formais_residuos"],
+            "ano_rais": r["ano_rais"],
+            "proxy_formalizacao": r["proxy_formalizacao"],
+            "flag_proxy": r["flag_proxy"],
+            "fonte_inf": r.get("fonte_inf"),
         })
+
+    # Contexto PNAD regional — vai APENAS em meta (D-02: PNAD nunca por município)
+    pnad_contexto = None
+    if pnad_df is not None and pnad_df.height > 0:
+        row = pnad_df.row(0, named=True)
+        pnad_contexto = {
+            "uf": row["uf"],
+            "periodo": row["periodo"],
+            "taxa_informalidade_pct": row["taxa_informalidade_pct"],
+            "flag": row["flag"],
+            "ambito": row["ambito"],
+            "fonte": row["fonte"],
+        }
 
     return {
         "meta": {
@@ -38,6 +62,7 @@ def to_payload(region_key: str, region_meta: dict, df: pl.DataFrame,
             "fonte_baseline": "SNIS/SINISA, PMGIRS, IBGE, transparência municipal",
             "aviso": ("Baseline = dado público (defasagem anual do SNIS). "
                       "Simulador = projeção de modelo; calibre antes de publicar."),
+            "pnad_contexto_regional": pnad_contexto,
         },
         "coeficientes": coef,
         "simulador_defaults": model.defaults(coef),
