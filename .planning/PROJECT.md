@@ -104,4 +104,6 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-21 after initialization*
+**Current state:** Fase 1 (baseline real RMS) e Fase 2 (camada de informalidade) completas. INFO-01..04 validados na Fase 2 — painel mostra informalidade por município (Censo 2022) + proxy de formalização (RAIS) com flags real/pendente, contexto PNAD como estimativa regional, e nota fixa de subcontagem da população catadora (D-10). Próximo: Fase 3 (deploy contínuo GitHub Pages).
+
+*Last updated: 2026-06-23 after Phase 2 completion*
