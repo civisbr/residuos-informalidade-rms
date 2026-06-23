@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-06-21)
 ## Current Position
 
 Phase: 1 (Baseline real da RMS) — ✅ COMPLETE (2026-06-23): 27/27 municípios com dado SNIS-RS real, 0 inventados
-Phase: 2 (Camada de informalidade) — CONTEXT + RESEARCH prontos. Planejamento interrompido (limite de sessão).
-Plan: Fase 1 (2/2) concluída; Fase 2 sem plans ainda (RESEARCH.md feita)
-Status: Retomar planejamento → /gsd-plan-phase 2 (pula pesquisa; roda pattern-map + planner + plan-checker)
+Phase: 2 (Camada de informalidade) — PLANEJADA. 3 planos (waves 1→2→3), plan-checker PASS.
+Plan: Fase 1 (2/2) concluída; Fase 2 com 3 planos prontos (0/3 executados)
+Status: Pronto para executar → /gsd-execute-phase 2
 Last activity: 2026-06-23
 
 Progress: [████░░░░░░░░░░░░░░░░░░] 20% (1/5 fases)
@@ -87,8 +87,9 @@ From `.planning/codebase/CONCERNS.md`, relevantes às próximas fases:
 ## Session Continuity
 
 Last session: 2026-06-23
-Stopped at: /gsd-plan-phase 2 --auto INTERROMPIDO por limite de sessão durante o pattern-mapper. RESEARCH.md concluída e commitada (dce8e9b) — Censo 2022 SIDRA tabela 10261 (informalidade 27/27 reais), PNAD só UF-SP (contexto regional), RAIS via basedosdados.br_me_rais CNAEs resíduos 2023. FALTA: pattern-map (opcional) + planner + plan-checker → PLAN.md. Decisão tomada: PULAR UI-SPEC (front vanilla, decisões D-08/09/10 já no CONTEXT). Nyquist OFF, security ON (planner inclui threat_model), MVP mode ON (fatias verticais). Retomar com: /gsd-plan-phase 2 (RESEARCH.md já existe → pula pesquisa).
-ANTES: Fase 2 context (be781f4); Fase 1 completa via scraper (0ea18ee, ac83138).
+Stopped at: Fase 2 PLANEJADA. 3 planos criados+commitados (4468b52), plan-checker PASS. pattern-mapper pulado (research já leu o código); UI-SPEC pulado (front vanilla). 3 warnings do checker a observar na execução: (1) assinatura build_region() muda p/ 6 args → atualizar test_build_offline_gera_dados; (2) conflito coluna 'fonte' no join → renomear p/ fonte_inf (já na action); (3) verify do 02-03 é grep estrutural → checkpoint visual compensa. Próximo: /gsd-execute-phase 2.
+Plano da Fase 2: 02-01 (fontes offline Censo/RAIS/PNAD + CSVs + testes) → 02-02 (pipeline: joins + proxy D-06/D-07 + render + data.json) → 02-03 (painel renderInformalidade + nota fixa D-10 + region-strip; checkpoint visual).
+ANTES: RESEARCH (dce8e9b), context (be781f4); Fase 1 completa via scraper (0ea18ee, ac83138).
 
 [HISTÓRICO 01-02] Stopped at: Plano 01-02 — caminho BigQuery DESCARTADO (Base dos Dados só tem SNIS água/esgoto em br_mdr_snis; NÃO tem resíduos sólidos). Auth BigQuery funciona com billing project=residuos-github (não residuos-500302). Usuário optou por SCRAPING do portal SNIS. Investigação do app Yii (app4.cidades.gov.br/serieHistorica/residuosSolidos) em andamento.
 
