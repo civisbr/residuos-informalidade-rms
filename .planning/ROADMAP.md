@@ -90,11 +90,17 @@ Plans:
   3. README mostra badge de build e o link público
   4. `site/data.json` commitado garante que o Pages funcione mesmo sem rebuild
 
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 
-- [ ] 03-01: TBD (definido em /gsd-plan-phase 3)
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Finalizar build.yml (actions v5 + concurrency + BUILD_DATE) + corrigir determinismo de gerado_em em render.py (D-01/D-03/D-05)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — Ativar GitHub Pages (D-04, passo manual) + badge + link público no README (D-07)
 
 ### Phase 4: Generalizar para qualquer cidade BR
 
@@ -143,6 +149,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Baseline real da RMS | 2/2 | Complete | 2026-06-23 |
 | 2. Camada de informalidade | 3/3 | Complete    | 2026-06-23 |
-| 3. Deploy contínuo no GitHub Pages | 0/TBD | Not started | - |
+| 3. Deploy contínuo no GitHub Pages | 0/2 | Not started | - |
 | 4. Generalizar para qualquer cidade BR | 0/TBD | Not started | - |
 | 5. Camada viva (operacional) | 0/TBD | Not started | - |
