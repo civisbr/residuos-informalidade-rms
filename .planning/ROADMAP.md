@@ -19,7 +19,7 @@ estar verde.
 
 - [x] **Phase 1: Baseline real da RMS** - 27 municípios com dado SNIS real ou pendente honesto, fonte citada
 - [x] **Phase 2: Camada de informalidade** - indicador de informalidade por município, com fonte e flag (completed 2026-06-23)
-- [ ] **Phase 3: Deploy contínuo no GitHub Pages** - push reconstrói e publica o painel
+- [x] **Phase 3: Deploy contínuo no GitHub Pages** - push reconstrói e publica o painel (completed 2026-06-23)
 - [ ] **Phase 4: Generalizar para qualquer cidade BR** - terceiro gera o painel de outra região só editando regions.yml
 - [ ] **Phase 5: Camada viva (operacional)** - telemetria real sobreposta ao baseline público
 
@@ -96,11 +96,11 @@ Plans:
 
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Finalizar build.yml (actions v5 + concurrency + BUILD_DATE) + corrigir determinismo de gerado_em em render.py (D-01/D-03/D-05)
+- [x] 03-01-PLAN.md — Finalizar build.yml (actions v5 + concurrency + BUILD_DATE) + corrigir determinismo de gerado_em em render.py (D-01/D-03/D-05)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03-02-PLAN.md — Ativar GitHub Pages (D-04, passo manual) + badge + link público no README (D-07)
+- [x] 03-02-PLAN.md — Ativar GitHub Pages (D-04, passo manual) + badge + link público no README (D-07)
 
 ### Phase 4: Generalizar para qualquer cidade BR
 
@@ -115,11 +115,22 @@ Plans:
   3. Município que não resolve no IBGE gera erro amigável (não stack trace)
   4. README traz o guia "Crie o painel da sua cidade em 5 minutos" e um terceiro consegue seguir só editando `regions.yml`
 
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
 
-- [ ] 04-01: TBD (definido em /gsd-plan-phase 4)
+**Wave 1** *(paralelo)*
+
+- [ ] 04-01-PLAN.md — ibge.refresh() com upsert idempotente + erro amigável difflib + CLI refresh-ibge --region (GEN-01/GEN-03/D-04..D-06/D-09)
+- [ ] 04-02-PLAN.md — Desacoplamento RMS: taxa_inf_media rename + sort nulls_last + subs dinâmico no app.js + novos testes (D-02)
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 04-03-PLAN.md — snis.refresh() promovido do scraper + UF_NOMES 27 estados + CLI refresh-snis --region (GEN-02/D-07/D-08)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 04-04-PLAN.md — Guia de 5 minutos no README + contrato mínimo regions.yml (GEN-04/D-03/D-10)
 
 ### Phase 5: Camada viva (operacional)
 
@@ -149,6 +160,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Baseline real da RMS | 2/2 | Complete | 2026-06-23 |
 | 2. Camada de informalidade | 3/3 | Complete    | 2026-06-23 |
-| 3. Deploy contínuo no GitHub Pages | 0/2 | Not started | - |
+| 3. Deploy contínuo no GitHub Pages | 2/2 | Complete    | 2026-06-24 |
 | 4. Generalizar para qualquer cidade BR | 0/TBD | Not started | - |
 | 5. Camada viva (operacional) | 0/TBD | Not started | - |
