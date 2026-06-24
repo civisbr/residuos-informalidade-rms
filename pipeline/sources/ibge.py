@@ -56,6 +56,13 @@ def refresh(region: str, root: Path = Path(".")) -> None:
         return
     meta = regions[region]
     uf: str = meta.get("uf", "")
+    if not uf:
+        print(
+            f"Região '{region}' não tem campo 'uf' em {regions_path}. "
+            "Adicione: uf: SP  (sigla do estado, 2 letras).",
+            file=sys.stderr,
+        )
+        return
 
     # --- 2. Baixar mapa de localidades da UF (id 7 dígitos + nome) ---
     print(f"Buscando municípios de {uf} na API IBGE localidades...")
