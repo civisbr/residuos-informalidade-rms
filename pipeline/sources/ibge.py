@@ -113,12 +113,16 @@ def refresh(region: str, root: Path = Path(".")) -> None:
         row_df = df.filter(mask)
 
         # D-06: se linha existe E ambos os campos estão preenchidos → preservar curadoria
+        # Usa check explícito de None (não truthiness) para não tratar populacao=0
+        # como campo vazio — 0 é um dado válido (WR-01).
         if row_df.height > 0:
             r = row_df.row(0, named=True)
             codigo = r.get("codigo_ibge")
             pop = r.get("populacao")
-            if codigo and pop:
-                continue  # dado curado preservado (ex: Sorocaba 709000)
+            codigo_ok = codigo is not None and codigo != ""
+            pop_ok = pop is not None
+            if codigo_ok and pop_ok:
+                continue  # ambos preenchidos — preservar curadoria (D-06)
 
         # Resolver nome via localidades_map
         loc = localidades_map.get(key)
