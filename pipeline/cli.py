@@ -66,6 +66,11 @@ def cmd_refresh_ibge(args) -> int:
     return 0
 
 
+def cmd_refresh_snis(args) -> int:
+    snis.refresh(args.region, Path("."), ano=args.ano, exclude=args.exclude or [])
+    return 0
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="obs", description="Observatório de Resíduos & Informalidade")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -79,6 +84,12 @@ def main(argv=None) -> int:
     ri = sub.add_parser("refresh-ibge", help="atualiza IBGE via API")
     ri.add_argument("--region", required=True, help="chave da região em config/regions.yml")
     ri.set_defaults(func=cmd_refresh_ibge)
+
+    rs = sub.add_parser("refresh-snis", help="baixa dados SNIS-RS via scraper (requer rede)")
+    rs.add_argument("--region", required=True, help="chave da região em config/regions.yml")
+    rs.add_argument("--ano", default=None, help="ano de referência (padrão: mais recente do portal)")
+    rs.add_argument("--exclude", nargs="*", default=[], help="municípios a pular (já têm dado citável)")
+    rs.set_defaults(func=cmd_refresh_snis)
 
     args = p.parse_args(argv)
     return args.func(args)
