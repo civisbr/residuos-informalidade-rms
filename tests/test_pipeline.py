@@ -224,7 +224,7 @@ def test_build_region_com_informalidade():
 
 
 def test_region_totals_taxa_inf_media():
-    """02-02 T1: region_totals() calcula taxa_inf_media_rms ponderada por total_ocupados."""
+    """02-02 T1: region_totals() calcula taxa_inf_media ponderada por total_ocupados."""
     import os
     os.chdir(ROOT)
     df_ibge = ibge.load(ROOT)
@@ -237,11 +237,11 @@ def test_region_totals_taxa_inf_media():
     )
     totals = transform.region_totals(df)
 
-    assert "taxa_inf_media_rms" in totals, "taxa_inf_media_rms ausente em region_totals()"
-    taxa = totals["taxa_inf_media_rms"]
-    assert taxa is not None, "taxa_inf_media_rms não deve ser None com dados completos"
+    assert "taxa_inf_media" in totals, "taxa_inf_media ausente em region_totals()"
+    taxa = totals["taxa_inf_media"]
+    assert taxa is not None, "taxa_inf_media não deve ser None com dados completos"
     # RMS como um todo tem taxa entre 10% e 50% (sanidade)
-    assert 10 < taxa < 50, f"taxa_inf_media_rms fora do intervalo esperado: {taxa}"
+    assert 10 < taxa < 50, f"taxa_inf_media fora do intervalo esperado: {taxa}"
 
 
 def test_payload_tem_informalidade():
@@ -269,8 +269,8 @@ def test_payload_tem_informalidade():
             f"PNAD não deve aparecer em municipios[] — encontrada em {mun['nome']}"
         )
 
-    # taxa_inf_media_rms em totais
-    assert "taxa_inf_media_rms" in d["totais"], "taxa_inf_media_rms ausente em totais"
+    # taxa_inf_media em totais (D-02: chave genérica sem sufixo rms)
+    assert "taxa_inf_media" in d["totais"], "taxa_inf_media ausente em totais"
 
 
 # ---------------------------------------------------------------------------
