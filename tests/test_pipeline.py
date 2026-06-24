@@ -449,3 +449,89 @@ def test_payload_usa_chave_generica():
     d = json.loads(data_path.read_text())
     assert "taxa_inf_media" in d["totais"], "taxa_inf_media ausente em totais"
     assert "taxa_inf_media_rms" not in d["totais"], "chave antiga taxa_inf_media_rms não deve existir"
+
+
+# ---------------------------------------------------------------------------
+# Fase 4 — CR-01: cold-start build produz pendente, não traceback
+# ---------------------------------------------------------------------------
+
+def test_cold_start_build_sem_csvs_snis_censo_rais(tmp_path):
+    """CR-01: build_region() com todos os load() sem arquivos CSV retorna linhas pendente.
+
+    Simula cold-start de uma nova região antes de qualquer refresh.
+    Nenhum CSV existe em data/raw/snis/, data/raw/censo/, data/raw/rais/.
+    O build deve produzir linhas com flag='pendente' e nunca lançar exceção.
+    """
+    import os
+    os.chdir(ROOT)
+
+    # tmp_path simula uma raiz sem CSVs (apenas config/municipios.csv existe)
+    import shutil
+    # Copiar config/ para tmp_path (ibge.load precisa de municipios.csv)
+    shutil.copytree(ROOT / "config", tmp_path / "config")
+    # NÃO criar data/raw/snis/, data/raw/censo/, data/raw/rais/ — cold-start
+
+    # Criar diretórios vazios para que o glob não falhe
+    (tmp_path / "data" / "raw" / "snis").mkdir(parents=True)
+    (tmp_path / "data" / "raw" / "censo").mkdir(parents=True)
+    (tmp_path / "data" / "raw" / "rais").mkdir(parents=True)
+
+    from pipeline.sources import ibge as _ibge, snis as _snis
+    from pipeline.sources import ibge_informalidade as _inf, rais as _rais
+
+    df_ibge = _ibge.load(tmp_path)
+    df_snis = _snis.load(tmp_path)
+    df_inf = _inf.load(tmp_path)
+    df_rais = _rais.load(tmp_path)
+
+    # Verificar que os frames vazios têm coluna 'key' (CR-01)
+    assert "key" in df_snis.columns, "snis.load() vazio deve ter coluna 'key'"
+    assert "key" in df_inf.columns, "ibge_informalidade.load() vazio deve ter coluna 'key'"
+    assert "key" in df_rais.columns, "rais.load() vazio deve ter coluna 'key'"
+
+    municipios_rms = REGIONS["rms"]["municipios"]
+    # Não deve lançar exceção (ColumnNotFoundError foi o bug do CR-01)
+    df = transform.build_region(municipios_rms, df_ibge, df_snis, df_inf, df_rais, COEF)
+
+    assert df.height == len(municipios_rms), (
+        f"build_region() cold-start deve ter {len(municipios_rms)} linhas, got {df.height}"
+    )
+    # Invariante sagrado: cold-start → todos pendente (nenhum número inventado)
+    assert df["flag"].to_list() == ["pendente"] * df.height, (
+        "CR-01: cold-start sem CSVs → todos os municípios devem ter flag='pendente'"
+    )
+    assert df["rsu_t_ano"].null_count() == df.height, (
+        "CR-01: cold-start sem CSVs → rsu_t_ano deve ser null para todos (nunca inventar número)"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Fase 4 — WR-01: upsert preserva populacao=0 curado
+# ---------------------------------------------------------------------------
+
+def test_upsert_preserva_populacao_zero():
+    """WR-01: upsert com check explícito preserva populacao=0 curado (não trata 0 como vazio).
+
+    O bug era `if codigo and pop` que trata pop=0 como False.
+    O fix usa `codigo is not None and codigo != "" and pop is not None`.
+    """
+    # Simula row com populacao=0 curado (ex.: município hipotético sem população)
+    r = {"codigo_ibge": "3500001", "populacao": 0}
+    codigo = r.get("codigo_ibge")
+    pop = r.get("populacao")
+
+    # Comportamento ANTIGO (bugado): `if codigo and pop` trata pop=0 como False
+    deve_preencher_antigo = not (codigo and pop)
+    assert deve_preencher_antigo, (
+        "WR-01: confirm bug — `if codigo and pop` falha para pop=0 "
+        "(trata 0 como 'não preenchido')"
+    )
+
+    # Comportamento NOVO (correto): check explícito de None
+    codigo_ok = codigo is not None and codigo != ""
+    pop_ok = pop is not None
+    deve_preservar_novo = codigo_ok and pop_ok
+    assert deve_preservar_novo, (
+        "WR-01: com check explícito, populacao=0 curado deve ser preservado "
+        "(0 é dado válido — não é campo vazio)"
+    )

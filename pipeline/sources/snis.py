@@ -35,7 +35,10 @@ SCHEMA = {
 def load(_root: Path = Path(".")) -> pl.DataFrame:
     files = sorted((_root / RAW).glob("*.csv"))
     if not files:
-        return pl.DataFrame(schema=SCHEMA)
+        # Inclui coluna 'key' para que os joins em transform.build_region() não falhem
+        # quando nenhum CSV existe (ex.: cold-start antes do primeiro refresh-snis)
+        empty = pl.DataFrame(schema=SCHEMA)
+        return empty.with_columns(pl.lit(None, dtype=pl.String).alias("key"))
     frames = [pl.read_csv(f, schema_overrides=SCHEMA, infer_schema_length=0) for f in files]
     df = pl.concat(frames, how="vertical_relaxed")
     # mantém o ano mais recente por município
