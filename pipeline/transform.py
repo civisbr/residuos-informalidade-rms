@@ -94,7 +94,7 @@ def build_region(municipios: list[dict], ibge: pl.DataFrame, snis: pl.DataFrame,
           .alias("flag_proxy"),
     ]).drop("_denominador")
 
-    return df.sort(["subregiao", "nome"])
+    return df.sort(["subregiao", "nome"], nulls_last=True)
 
 
 def region_totals(df: pl.DataFrame) -> dict:
@@ -112,9 +112,9 @@ def region_totals(df: pl.DataFrame) -> dict:
             (inf_df["taxa_informalidade_pct"] * inf_df["total_ocupados"]).sum()
         )
         soma_ocupados = float(inf_df["total_ocupados"].sum())
-        taxa_inf_media_rms = soma_ponderada / soma_ocupados if soma_ocupados > 0 else None
+        taxa_inf_media = soma_ponderada / soma_ocupados if soma_ocupados > 0 else None
     else:
-        taxa_inf_media_rms = None
+        taxa_inf_media = None
 
     return {
         "municipios_total": df.height,
@@ -125,5 +125,5 @@ def region_totals(df: pl.DataFrame) -> dict:
         "reciclado_t_ano": float(com_dado["reciclado_t_ano"].sum() or 0),
         "cooperados": float(com_dado["cooperados"].sum() or 0),
         "populacao": float(df["populacao"].sum() or 0),
-        "taxa_inf_media_rms": taxa_inf_media_rms,
+        "taxa_inf_media": taxa_inf_media,
     }
