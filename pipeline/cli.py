@@ -45,9 +45,9 @@ def cmd_build(args) -> int:
     print(f"✓ {out} — {meta['nome']}: {com}/{tot} municípios com dado público")
     print(f"  RSU total: {totals['rsu_t_ano']:,.0f} t/ano · "
           f"orgânico: {totals['organico_t_ano']:,.0f} t/ano")
-    taxa_inf = totals.get("taxa_inf_media_rms")
+    taxa_inf = totals.get("taxa_inf_media")
     if taxa_inf is not None:
-        print(f"  Informalidade média RMS: {taxa_inf:.1f}% (Censo 2022, ponderado por ocupados)")
+        print(f"  Informalidade média {meta['nome']}: {taxa_inf:.1f}% (Censo 2022, ponderado por ocupados)")
     if com < tot:
         print(f"  {tot - com} municípios pendentes — rode o refresh do SNIS "
               f"(scripts/refresh_snis.md)")
@@ -61,8 +61,8 @@ def cmd_regions(_args) -> int:
     return 0
 
 
-def cmd_refresh_ibge(_args) -> int:
-    ibge.refresh(Path("."))
+def cmd_refresh_ibge(args) -> int:
+    ibge.refresh(args.region, Path("."))
     return 0
 
 
@@ -75,7 +75,10 @@ def main(argv=None) -> int:
     b.set_defaults(func=cmd_build)
 
     sub.add_parser("regions", help="lista regiões").set_defaults(func=cmd_regions)
-    sub.add_parser("refresh-ibge", help="atualiza IBGE via API").set_defaults(func=cmd_refresh_ibge)
+
+    ri = sub.add_parser("refresh-ibge", help="atualiza IBGE via API")
+    ri.add_argument("--region", required=True, help="chave da região em config/regions.yml")
+    ri.set_defaults(func=cmd_refresh_ibge)
 
     args = p.parse_args(argv)
     return args.func(args)
