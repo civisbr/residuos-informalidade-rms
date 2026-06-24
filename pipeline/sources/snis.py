@@ -77,6 +77,17 @@ def refresh(region: str, root: Path = Path("."),
     from scrape_snis import cmd_build  # noqa: PLC0415
 
     out = root / "data" / "raw" / "snis" / f"snis_{region}.csv"
+    # IN-01: confinamento de caminho — garante que o arquivo de saída
+    # permanece dentro de data/raw/snis/, mesmo que a chave no YAML
+    # contenha separadores de caminho (ex.: "../evil").
+    snis_dir = (root / "data" / "raw" / "snis").resolve()
+    if not out.resolve().is_relative_to(snis_dir):
+        print(
+            f"Erro: caminho de saída '{out.resolve()}' fora do diretório permitido "
+            f"'{snis_dir}'. Chave de região inválida.",
+            file=sys.stderr,
+        )
+        return
     args = argparse.Namespace(
         region=region, ano=ano, exclude=exclude or [], out=out,
     )
