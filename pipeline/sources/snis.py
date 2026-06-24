@@ -71,7 +71,9 @@ def refresh(region: str, root: Path = Path("."),
         print(f"Região '{region}' não existe. Veja: obs regions", file=sys.stderr)
         return
 
-    sys.path.insert(0, str(root / "scripts"))
+    scripts_dir = str(root / "scripts")
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
     from scrape_snis import cmd_build  # noqa: PLC0415
 
     out = root / "data" / "raw" / "snis" / f"snis_{region}.csv"
