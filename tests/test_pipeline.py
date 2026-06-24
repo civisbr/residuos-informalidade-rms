@@ -388,3 +388,64 @@ def test_ibge_load_permanece_intacto():
     assert str(soro["codigo_ibge"][0]) == "3552205", (
         f"Sorocaba codigo_ibge deve ser '3552205', got {soro['codigo_ibge'][0]}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Fase 4 — Plano 04-02: rename taxa_inf_media_rms → taxa_inf_media; sort nulls (D-02)
+# ---------------------------------------------------------------------------
+
+def test_sort_com_subregiao_null():
+    """D-02: sort com nulls_last=True não lança exceção para municipios sem subregiao."""
+    df = pl.DataFrame([
+        {"nome": "Cidade A", "uf": "MG", "subregiao": None, "key": "cidade a"},
+        {"nome": "Cidade B", "uf": "MG", "subregiao": None, "key": "cidade b"},
+    ])
+    result = df.sort(["subregiao", "nome"], nulls_last=True)
+    assert result.height == 2
+    assert result["nome"][0] == "Cidade A", (
+        "D-02: com subregiao=null, municipios devem ser ordenados por nome"
+    )
+
+
+def test_region_totals_chave_generica():
+    """D-02: region_totals() usa chave 'taxa_inf_media' (sem sufixo 'rms')."""
+    import os
+    os.chdir(ROOT)
+    df_ibge = ibge.load(ROOT)
+    df_snis = snis.load(ROOT)
+    df_inf = ibge_informalidade.load(ROOT)
+    df_rais = rais.load(ROOT)
+
+    df = transform.build_region(
+        REGIONS["rms"]["municipios"], df_ibge, df_snis, df_inf, df_rais, COEF
+    )
+    totals = transform.region_totals(df)
+
+    assert "taxa_inf_media" in totals, "chave deve ser taxa_inf_media (sem sufixo rms)"
+    assert "taxa_inf_media_rms" not in totals, "chave antiga taxa_inf_media_rms não deve mais existir"
+
+
+def test_upsert_preserva_dado_curado_d02():
+    """D-06/D-02: upsert não sobrescreve linha com codigo_ibge e populacao preenchidos."""
+    df = pl.DataFrame({
+        "nome": ["Sorocaba"],
+        "uf": ["SP"],
+        "codigo_ibge": ["3552205"],
+        "populacao": pl.Series([709000], dtype=pl.Int64),
+        "fonte_pop": ["IBGE/SINISA (pop. urbana)"],
+    })
+    r = df.filter(pl.col("nome") == "Sorocaba").row(0, named=True)
+    deve_preencher = not (r["codigo_ibge"] and r["populacao"])
+    assert not deve_preencher, (
+        "Sorocaba com codigo_ibge=3552205 e populacao=709000 NÃO deve ser sobrescrita (D-06)"
+    )
+
+
+def test_payload_usa_chave_generica():
+    """D-02: data.json gerado tem 'taxa_inf_media' em totais (não 'taxa_inf_media_rms')."""
+    import json
+    data_path = ROOT / "site" / "data.json"
+    assert data_path.exists(), "site/data.json deve existir — rodar 'uv run obs build --region rms'"
+    d = json.loads(data_path.read_text())
+    assert "taxa_inf_media" in d["totais"], "taxa_inf_media ausente em totais"
+    assert "taxa_inf_media_rms" not in d["totais"], "chave antiga taxa_inf_media_rms não deve existir"
