@@ -1,8 +1,9 @@
 """Fonte SNIS-RS: indicadores de resíduos sólidos por município.
 
 Offline (padrão): lê todos os CSVs em data/raw/snis/.
-Refresh: baixe o export anual do SNIS e solte em data/raw/snis/ (ver
-scripts/refresh_snis.md). A pipeline reprocessa tudo de forma determinística.
+Refresh (requer rede): use `obs refresh-snis --region <chave>` para baixar
+dados do portal SNIS Série Histórica e gravar data/raw/snis/snis_<chave>.csv.
+A pipeline reprocessa tudo de forma determinística.
 
 Esquema esperado (colunas):
   municipio, uf, ano, rsu_t_ano, reciclado_t_ano, reciclado_pct,
@@ -10,8 +11,10 @@ Esquema esperado (colunas):
 Campos vazios viram null -> o município aparece como 'pendente' no painel.
 """
 from __future__ import annotations
+import sys
 from pathlib import Path
 import polars as pl
+import yaml
 
 from .base import slug
 
@@ -42,3 +45,34 @@ def load(_root: Path = Path(".")) -> pl.DataFrame:
           .unique(subset=["key"], keep="first")
     )
     return df
+
+
+def refresh(region: str, root: Path = Path("."),
+            ano: str | None = None,
+            exclude: list[str] | None = None) -> None:
+    """Baixa dados SNIS-RS para a região via scraper e grava
+    data/raw/snis/snis_{region}.csv (D-08). Requer rede.
+
+    O build offline usa apenas load(). Import de requests é lazy
+    (ocorre dentro de _session() em scrape_snis.py — não vaza ao importar snis).
+
+    Segurança (T-04-09): region é validada contra regions.yml via yaml.safe_load
+    ANTES de montar o caminho do arquivo — evita path traversal.
+    """
+    import argparse
+
+    # Validar region via yaml.safe_load antes de montar caminho (T-04-09/T-04-10)
+    regions_path = root / "config" / "regions.yml"
+    regions = yaml.safe_load(regions_path.read_text(encoding="utf-8"))
+    if region not in regions:
+        print(f"Região '{region}' não existe. Veja: obs regions", file=sys.stderr)
+        return
+
+    sys.path.insert(0, str(root / "scripts"))
+    from scrape_snis import cmd_build  # noqa: PLC0415
+
+    out = root / "data" / "raw" / "snis" / f"snis_{region}.csv"
+    args = argparse.Namespace(
+        region=region, ano=ano, exclude=exclude or [], out=out,
+    )
+    cmd_build(args)
