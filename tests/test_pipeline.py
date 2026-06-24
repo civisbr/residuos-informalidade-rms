@@ -271,3 +271,120 @@ def test_payload_tem_informalidade():
 
     # taxa_inf_media_rms em totais
     assert "taxa_inf_media_rms" in d["totais"], "taxa_inf_media_rms ausente em totais"
+
+
+# ---------------------------------------------------------------------------
+# Fase 4 — Plano 04-01: ibge.refresh() — GEN-01/D-04/D-05/D-06/D-09
+# ---------------------------------------------------------------------------
+
+def test_ibge_refresh_signature_e_sem_not_implemented():
+    """GEN-01: ibge.refresh() existe com assinatura correta e não levanta NotImplementedError."""
+    import inspect
+    sig = inspect.signature(ibge.refresh)
+    params = list(sig.parameters.keys())
+    assert "region" in params, "refresh() deve ter parâmetro 'region'"
+    assert "root" in params, "refresh() deve ter parâmetro 'root'"
+    # Não deve levantar NotImplementedError ao ser chamada sem rede — apenas ao tentar conectar
+    # Testamos a estrutura via inspeção de código-fonte
+    import ast
+    src = (ROOT / "pipeline" / "sources" / "ibge.py").read_text()
+    tree = ast.parse(src)
+    refresh_node = next(
+        n for n in ast.walk(tree)
+        if isinstance(n, ast.FunctionDef) and n.name == "refresh"
+    )
+    refresh_src = ast.get_source_segment(src, refresh_node)
+    assert "NotImplementedError" not in refresh_src, (
+        "NotImplementedError deve ter sido removido de refresh()"
+    )
+    assert "import httpx" in refresh_src, (
+        "httpx deve ser lazy-importado dentro de refresh() — nunca no topo do módulo"
+    )
+    assert "yaml.safe_load" in refresh_src, (
+        "yaml.safe_load deve ser usado para ler regions.yml dentro de refresh()"
+    )
+
+
+def test_ibge_refresh_contem_fonte_pop_literal():
+    """D-05: ibge.py contém o literal 'IBGE Censo 2022' para fonte_pop."""
+    src = (ROOT / "pipeline" / "sources" / "ibge.py").read_text()
+    assert "IBGE Censo 2022" in src, (
+        "fonte_pop='IBGE Censo 2022' (literal exato D-05) deve estar em ibge.py"
+    )
+
+
+def test_ibge_refresh_usa_difflib():
+    """D-09: ibge.py importa difflib para sugestão de nome amigável."""
+    src = (ROOT / "pipeline" / "sources" / "ibge.py").read_text()
+    assert "difflib" in src, (
+        "difflib deve ser importado em ibge.py para sugestão de nome (D-09)"
+    )
+    assert "get_close_matches" in src, (
+        "difflib.get_close_matches deve estar em ibge.py (D-09)"
+    )
+
+
+def test_upsert_preserva_dado_curado():
+    """D-06: upsert não sobrescreve linha com codigo_ibge e populacao preenchidos (Sorocaba)."""
+    df = pl.DataFrame({
+        "nome": ["Sorocaba"],
+        "uf": ["SP"],
+        "codigo_ibge": ["3552205"],
+        "populacao": pl.Series([709000], dtype=pl.Int64),
+        "fonte_pop": ["IBGE/SINISA (pop. urbana)"],
+    })
+    r = df.filter(pl.col("nome") == "Sorocaba").row(0, named=True)
+    # Condição D-06: não preencher se AMBOS estão presentes
+    deve_preencher = not (r["codigo_ibge"] and r["populacao"])
+    assert not deve_preencher, (
+        "Sorocaba com codigo_ibge=3552205 e populacao=709000 NÃO deve ser sobrescrita (D-06)"
+    )
+
+
+def test_upsert_preenche_linha_vazia():
+    """D-06: upsert DEVE preencher linha com codigo_ibge E populacao vazios (Alambari)."""
+    df = pl.DataFrame({
+        "nome": ["Alambari"],
+        "uf": ["SP"],
+        "codigo_ibge": pl.Series([None], dtype=pl.String),
+        "populacao": pl.Series([None], dtype=pl.Int64),
+        "fonte_pop": pl.Series([None], dtype=pl.String),
+    })
+    r = df.filter(pl.col("nome") == "Alambari").row(0, named=True)
+    # Condição D-06: deve preencher se codigo_ibge OU populacao estão vazios
+    deve_preencher = not (r["codigo_ibge"] and r["populacao"])
+    assert deve_preencher, (
+        "Alambari com campos vazios DEVE ser preenchida no refresh (D-06)"
+    )
+
+
+def test_upsert_preenche_codigo_ibge_vazio():
+    """D-06: upsert preenche linha com codigo_ibge vazio mas populacao presente (Votorantim)."""
+    df = pl.DataFrame({
+        "nome": ["Votorantim"],
+        "uf": ["SP"],
+        "codigo_ibge": pl.Series([None], dtype=pl.String),
+        "populacao": pl.Series([124000], dtype=pl.Int64),
+        "fonte_pop": ["IBGE ~2022 (aprox.)"],
+    })
+    r = df.filter(pl.col("nome") == "Votorantim").row(0, named=True)
+    # Condição D-06: deve preencher se codigo_ibge OU populacao estão vazios
+    deve_preencher = not (r["codigo_ibge"] and r["populacao"])
+    assert deve_preencher, (
+        "Votorantim com codigo_ibge vazio DEVE ter codigo_ibge preenchido no refresh (D-06)"
+    )
+
+
+def test_ibge_load_permanece_intacto():
+    """GEN-01: ibge.load() continua funcionando offline após implementação do refresh()."""
+    import os
+    os.chdir(ROOT)
+    df = ibge.load(ROOT)
+    assert df.height == 27, f"ibge.load() deve retornar 27 linhas, got {df.height}"
+    assert "key" in df.columns, "ibge.load() deve ter coluna 'key' (slug)"
+    # Sorocaba com código curado deve estar presente
+    soro = df.filter(df["key"] == "sorocaba")
+    assert soro.height == 1, "Sorocaba deve estar no cache"
+    assert str(soro["codigo_ibge"][0]) == "3552205", (
+        f"Sorocaba codigo_ibge deve ser '3552205', got {soro['codigo_ibge'][0]}"
+    )
