@@ -55,7 +55,7 @@ function buildRegionStrip() {
     ["Orgânico estimado", `${fmt(t.organico_t_ano)}<small> t/ano</small>`],
     ["Reciclado", `${fmt(t.reciclado_t_ano)}<small> t/ano</small>`],
     ["Cooperados mapeados", `${fmt(t.cooperados)}`],
-    ["Informalidade média RMS", t.taxa_inf_media_rms != null ? `${fmt(t.taxa_inf_media_rms, 1)}<small>%</small>` : "—"],
+    ["Informalidade média da região", t.taxa_inf_media != null ? `${fmt(t.taxa_inf_media, 1)}<small>%</small>` : "—"],
     ["População", `${fmt(t.populacao)}`],
   ];
   $("regionStrip").innerHTML = cells.map(([l, v]) =>
@@ -63,13 +63,20 @@ function buildRegionStrip() {
 }
 
 function buildCitySelect() {
-  const subs = { 1: [], 2: [], 3: [], "null": [] };
-  DATA.municipios.forEach(m => (subs[m.subregiao ?? "null"].push(m)));
+  const subs = {};
+  DATA.municipios.forEach(m => {
+    const k = m.subregiao ?? "null";
+    (subs[k] = subs[k] || []).push(m);
+  });
+  const somenteNull = Object.keys(subs).every(k => k === "null");
+  const keys = Object.keys(subs).sort((a, b) =>
+    a === "null" ? 1 : b === "null" ? -1 : Number(a) - Number(b)
+  );
   const flag = m => m.flag === "real" ? " ✓" : m.flag === "estimativa" ? " ~" : " ⊘";
   let html = "";
-  for (const sr of [1, 2, 3, "null"]) {
+  for (const sr of keys) {
     if (!subs[sr].length) continue;
-    const lbl = sr === "null" ? "Outros" : `Sub-região ${sr}`;
+    const lbl = sr === "null" ? (somenteNull ? "Municípios" : "Outros") : `Sub-região ${sr}`;
     html += `<optgroup label="${lbl}">` +
       subs[sr].map(m => `<option value="${m.nome}">${m.nome}${flag(m)}</option>`).join("") +
       `</optgroup>`;
