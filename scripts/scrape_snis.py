@@ -86,15 +86,29 @@ def _session():
         "Referer": BASE + "municipio/index",
     })
     # Estabelece sessão e carrega o contexto do form consolidado por município.
-    s.get(BASE + "municipio/index", timeout=60)
-    s.post(BASE + "consolidadoMunicipio/index",
-           data={"ajax": "1", "action": "index"}, timeout=60)
+    try:
+        s.get(BASE + "municipio/index", timeout=60)
+        s.post(BASE + "consolidadoMunicipio/index",
+               data={"ajax": "1", "action": "index"}, timeout=60)
+    except Exception as exc:
+        sys.exit(f"Erro ao estabelecer sessão com o portal SNIS: {exc}")
     return s
 
 
 def _get_select(s, element: str, **extra) -> dict:
+    import requests
+
     data = {"element": element, "ajax": "1", **extra}
-    r = s.post(BASE + "consolidadoMunicipio/getSelectOpt", data=data, timeout=120).json()
+    try:
+        resp = s.post(BASE + "consolidadoMunicipio/getSelectOpt", data=data, timeout=120)
+        resp.raise_for_status()
+        r = resp.json()
+    except requests.RequestException as exc:
+        print(f"Aviso: erro ao buscar seletor '{element}' no SNIS: {exc}", file=sys.stderr)
+        return {}
+    except Exception as exc:  # JSONDecodeError
+        print(f"Aviso: resposta não-JSON ao buscar seletor '{element}': {exc}", file=sys.stderr)
+        return {}
     return r.get("arrSelect", {}).get(element, {})
 
 
@@ -147,14 +161,26 @@ def _query_grid(s, codes: list[str], ano: str) -> list[dict]:
     form = urlencode(pairs)
     sid = f"{int(time.time() * 1000)}-{random.randint(1, 9999999)}"
 
-    s.post(BASE + "consolidadoMunicipio/getGridConfig",
-           data={"data": form, "starting": "1", "search-id": sid}, timeout=120)
+    import requests
+
+    try:
+        s.post(BASE + "consolidadoMunicipio/getGridConfig",
+               data={"data": form, "starting": "1", "search-id": sid}, timeout=120)
+    except requests.RequestException as exc:
+        sys.exit(f"Erro ao iniciar getGridConfig no SNIS: {exc}")
 
     # getGridConfig é assíncrono ("Configurando matriz"): poll até vir colModel.
     cfg = None
     for _ in range(30):
-        r = s.post(BASE + "consolidadoMunicipio/getGridConfig",
-                   data={"data": form, "search-id": sid}, timeout=120).json()
+        try:
+            resp = s.post(BASE + "consolidadoMunicipio/getGridConfig",
+                          data={"data": form, "search-id": sid}, timeout=120)
+            resp.raise_for_status()
+            r = resp.json()
+        except requests.RequestException as exc:
+            sys.exit(f"Erro durante polling de getGridConfig: {exc}")
+        except Exception as exc:  # JSONDecodeError
+            sys.exit(f"Resposta não-JSON em getGridConfig: {exc}")
         if r.get("colModel"):
             cfg = r
             break
@@ -169,10 +195,17 @@ def _query_grid(s, codes: list[str], ano: str) -> list[dict]:
     rows: list[dict] = []
     page = 1
     while True:
-        gd = s.post(BASE + "consolidadoMunicipio/getGridData",
-                    data={"data": form, "search-id": sid, "page": str(page),
-                          "rows": str(per_page), "sidx": "nom_mun", "sord": "asc"},
-                    timeout=120).json()
+        try:
+            resp = s.post(BASE + "consolidadoMunicipio/getGridData",
+                          data={"data": form, "search-id": sid, "page": str(page),
+                                "rows": str(per_page), "sidx": "nom_mun", "sord": "asc"},
+                          timeout=120)
+            resp.raise_for_status()
+            gd = resp.json()
+        except requests.RequestException as exc:
+            sys.exit(f"Erro ao buscar getGridData (página {page}): {exc}")
+        except Exception as exc:  # JSONDecodeError
+            sys.exit(f"Resposta não-JSON em getGridData (página {page}): {exc}")
         if gd.get("status") == "erro":
             sys.exit(f"getGridData falhou: {gd.get('msg')}")
         for r in gd.get("rows", []):

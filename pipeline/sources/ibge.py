@@ -59,24 +59,46 @@ def refresh(region: str, root: Path = Path(".")) -> None:
 
     # --- 2. Baixar mapa de localidades da UF (id 7 dígitos + nome) ---
     print(f"Buscando municípios de {uf} na API IBGE localidades...")
-    with httpx.Client(timeout=60) as client:
-        resp = client.get(
-            f"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios"
-        )
-        resp.raise_for_status()
-        muns = resp.json()
+    try:
+        with httpx.Client(timeout=60) as client:
+            resp = client.get(
+                f"https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf}/municipios"
+            )
+            resp.raise_for_status()
+            muns = resp.json()
+    except httpx.HTTPError as exc:
+        print(f"Erro ao buscar localidades IBGE ({uf}): {exc}", file=sys.stderr)
+        return
+    except Exception as exc:  # JSONDecodeError, etc.
+        print(f"Erro inesperado ao processar resposta IBGE localidades: {exc}", file=sys.stderr)
+        return
 
     # slug(nome) -> dict com id (int 7 dígitos) e nome (str)
     localidades_map: dict[str, dict] = {slug(m["nome"]): m for m in muns}
 
     # --- 3. Baixar população Censo 2022 para todos os municípios BR (batch único) ---
     print("Buscando população Censo 2022 na API SIDRA (t/4714, ~1.4 MB)...")
-    with httpx.Client(timeout=120) as client:
-        resp = client.get(
-            "https://apisidra.ibge.gov.br/values/t/4714/n6/all/v/93/p/2022"
-        )
-        resp.raise_for_status()
-        sidra_rows = resp.json()[1:]  # data[0] é header — Pitfall 6
+    try:
+        with httpx.Client(timeout=120) as client:
+            resp = client.get(
+                "https://apisidra.ibge.gov.br/values/t/4714/n6/all/v/93/p/2022"
+            )
+            resp.raise_for_status()
+            raw = resp.json()
+            if not isinstance(raw, list):
+                print(
+                    f"SIDRA retornou formato inesperado (esperado lista, recebido {type(raw).__name__}). "
+                    "Verifique a API e tente novamente.",
+                    file=sys.stderr,
+                )
+                return
+            sidra_rows = raw[1:]  # data[0] é header — Pitfall 6
+    except httpx.HTTPError as exc:
+        print(f"Erro ao buscar população SIDRA: {exc}", file=sys.stderr)
+        return
+    except Exception as exc:  # JSONDecodeError, etc.
+        print(f"Erro inesperado ao processar resposta SIDRA: {exc}", file=sys.stderr)
+        return
 
     # D1C (str 7 dígitos) -> populacao (int) — só onde V é dígito (Pitfall 6 / T-04-04)
     pop_map: dict[str, int] = {
