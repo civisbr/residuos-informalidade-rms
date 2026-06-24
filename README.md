@@ -30,10 +30,41 @@ cd site && python -m http.server  # abra http://localhost:8000
 > Abrir `site/index.html` direto por `file://` bloqueia o `fetch` do `data.json`.
 > Use um servidor local (linha acima) ou o GitHub Pages.
 
-## Crie o painel da sua cidade
-Edite `config/regions.yml`, adicione uma região com a lista de municípios e rode
-`uv run obs build --region <sua_chave>`. Os dados de resíduos entram em
-`data/raw/snis/` (ver `scripts/refresh_snis.md`). Sem dado, fica pendente.
+## Crie o painel da sua cidade em 5 minutos
+
+### 1. Declarar a região
+Edite `config/regions.yml` (campos obrigatórios: `nome` por região; `nome` + `uf` por município):
+
+```yaml
+minha_regiao:
+  nome: "Região do Vale do Paraíba"
+  uf: SP
+  municipios:
+    - { nome: "São José dos Campos", uf: SP }
+    - { nome: "Jacareí", uf: SP }
+```
+
+### 2. Resolver identidade (IBGE)
+```bash
+uv run obs refresh-ibge --region minha_regiao
+```
+Resolve código IBGE e população (Censo 2022) para cada município e salva em `config/municipios.csv`.
+
+### 3. Baixar dados de resíduos (SNIS)
+```bash
+uv run obs refresh-snis --region minha_regiao
+```
+Baixa indicadores de RSU do portal SNIS-RS e salva em `data/raw/snis/snis_minha_regiao.csv`.
+
+### 4. Gerar o painel
+```bash
+uv run obs build --region minha_regiao
+```
+
+> **Aviso honesto:** informalidade e RAIS ficam `pendente` para regiões fora da RMS
+> (Região Metropolitana de Sorocaba) — os dados de Censo 2022 e RAIS 2023 estão
+> pré-carregados apenas para os 27 municípios da RMS. Um painel com resíduos reais
+> e informalidade `pendente` é um painel **válido** — nunca inventamos número.
 
 ## Arquitetura
 `config/` (regiões, municípios, coeficientes) → `pipeline/` (Polars: fontes →

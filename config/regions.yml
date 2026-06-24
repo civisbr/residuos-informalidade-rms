@@ -42,10 +42,14 @@ rms:
     - { nome: "Tapiraí", uf: SP, subregiao: 3 }
     - { nome: "Votorantim", uf: SP, subregiao: 3 }
 
-# Exemplo de outra região (descomente e edite):
-# minha_cidade:
-#   nome: "Meu município"
-#   uf: SP
-#   destaque: "Cidade X"
+# Como criar o painel da sua cidade (ver README — guia de 5 minutos):
+#
+# minha_regiao:                        # chave da região (sem espaços, sem acentos)
+#   nome: "Nome da Região"             # OBRIGATÓRIO — aparece no painel
+#   uf: SP                             # OBRIGATÓRIO — para refresh-snis e refresh-ibge
+#   destaque: "Cidade Principal"       # opcional (default: primeiro município)
+#   fonte: "Lei Complementar 123/20XX" # opcional
 #   municipios:
-#     - { nome: "Cidade X", uf: SP }
+#     - { nome: "Cidade A", uf: SP }           # mínimo: nome + uf
+#     - { nome: "Cidade B", uf: SP }           # subregiao ausente = lista plana
+#     - { nome: "Cidade C", uf: SP, subregiao: 1 }  # subregiao opcional (int)
