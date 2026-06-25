@@ -127,3 +127,37 @@ def region_totals(df: pl.DataFrame) -> dict:
         "populacao": float(df["populacao"].sum() or 0),
         "taxa_inf_media": taxa_inf_media,
     }
+
+
+def build_operacao(operacao: pl.DataFrame, coef: dict) -> dict:
+    """Agrega a telemetria REAL da operação numa série mensal regional (LIVE-04).
+
+    Estado vazio honesto (D-04, regra sagrada): sem telemetria → série vazia,
+    acumulados None, tem_dado False. Nunca lança, nunca inventa número. Mês ou
+    medida ausente nunca vira 0 — aparece como ausência, não como zero medido.
+
+    Com dado: soma os municípios por mês (group_by, não loop) e ordena por mês
+    para determinismo (Pitfall 4 — sem relógio, ordenação estável). Os 4
+    acumulados (D-11) somam a série: desvio de aterro (t), renda a catadores
+    (R$), larva seca (t) e frass (t). O projetado da calibração e os derivados
+    co2e/carros ficam para o Plano 05-02 (dependem do teste de paridade).
+    """
+    if operacao.height == 0 or "mes" not in operacao.columns:
+        return {"serie": [], "acumulados": None, "tem_dado": False}
+
+    serie = operacao.group_by("mes").agg([
+        pl.col("n_clientes").sum().alias("n_clientes"),
+        pl.col("t_org_coletada").sum().alias("real_desviado_t"),
+        pl.col("larva_seca_t").sum().alias("real_larva_seca_t"),
+        pl.col("frass_t").sum().alias("real_frass_t"),
+        pl.col("partilha_rs").sum().alias("real_partilha_rs"),
+    ]).sort("mes")
+
+    acumulados = {
+        "desviado_t": float(serie["real_desviado_t"].sum() or 0),
+        "partilha_rs": float(serie["real_partilha_rs"].sum() or 0),
+        "larva_seca_t": float(serie["real_larva_seca_t"].sum() or 0),
+        "frass_t": float(serie["real_frass_t"].sum() or 0),
+    }
+
+    return {"serie": serie.to_dicts(), "acumulados": acumulados, "tem_dado": True}
