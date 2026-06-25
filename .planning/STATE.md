@@ -2,16 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: ready_to_plan
-last_updated: 2026-06-23T16:35:49.289Z
-last_activity: 2026-06-23
+current_phase: 04
+current_phase_name: generalizar-para-qualquer-cidade-br
+status: verifying
+stopped_at: Phase 5 context gathered
+last_updated: "2026-06-25T17:01:05.074Z"
+last_activity: 2026-06-24
 progress:
   total_phases: 5
-  completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
-  percent: 40
-stopped_at: Phase 02 complete (3/3) — ready to discuss Phase 3
+  completed_phases: 4
+  total_plans: 11
+  completed_plans: 11
+  percent: 80
 ---
 
 # Project State
@@ -21,15 +23,15 @@ stopped_at: Phase 02 complete (3/3) — ready to discuss Phase 3
 See: .planning/PROJECT.md (updated 2026-06-21)
 
 **Core value:** Credibilidade do dado — nunca apresentar projeção como medição, nunca inventar número.
-**Current focus:** Phase 3 — deploy contínuo no github pages
+**Current focus:** Phase 04 — generalizar-para-qualquer-cidade-br
 
 ## Current Position
 
-Phase: 3
+Phase: 04 (generalizar-para-qualquer-cidade-br) — EXECUTING
 Phase: 2 (Camada de informalidade) — EXECUTANDO. 3 planos (waves 1→2→3). Plan 01 COMPLETO.
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-06-23
+Plan: 4 of 4
+Status: Phase complete — ready for verification
+Last activity: 2026-06-24
 
 Progress: [██████████] 100%
 
@@ -37,7 +39,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 3
+- Total plans completed: 5
 - Average duration: — min
 - Total execution time: 0 hours
 
@@ -46,6 +48,7 @@ Progress: [██████████] 100%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 02 | 3 | - | - |
+| 03 | 2 | - | - |
 
 **Recent Trend:**
 
@@ -56,6 +59,9 @@ Progress: [██████████] 100%
 | Phase 01-baseline-real-da-rms P01 | 260 | 3 tasks | 8 files |
 | Phase 02-camada-de-informalidade P01 | 5 | 2 tasks | 7 files |
 | Phase 02-camada-de-informalidade P03 | 8 | 2 tasks | 2 files |
+| Phase 03 P01 | 15 | 2 tasks | 3 files |
+| Phase 03 P02 | 2 | 2 tasks | 1 files |
+| Phase 04 P02 | 15 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -76,6 +82,13 @@ Recent decisions affecting current work:
 - 02-02: pnad_contexto_regional em meta, nunca em municipios[] — invariante D-02 implementada.
 - [Phase ?]: note D-10 always visible
 - [Phase ?]: PNAD via meta not CITY
+- [Phase 03-01]: BUILD_DATE injetado via shell $(date -I) no step obs build — funciona em push e workflow_dispatch sem depender de contexto de evento
+- [Phase 03-01]: gerado_em usa os.environ.get(BUILD_DATE, local)[:10] — sentinel local elimina diff espurio em rebuild local (D-05)
+- [Phase ?]: [Phase 03-02]: ativação do GitHub Pages (D-04) DEFERRED por decisão do usuário — site não fica ao vivo até Settings → Pages → Source = GitHub Actions ser ativado e o workflow rodar
+- [Phase ?]: [Phase 03-02]: badge de build + link público no topo do README (D-07); badge funciona independente do Pages, link aponta para a URL pública futura
+- [Phase ?]: 04-02: taxa_inf_media_rms renomeada para taxa_inf_media — rename atômico em transform.py, tests e app.js
+- [Phase ?]: 04-02: sort com nulls_last=True para municípios sem subregiao ficarem no final
+- [Phase ?]: 04-02: buildCitySelect dinâmico com somenteNull — label Municípios para região sem sub-regiões
 
 ### Pending Todos
 
@@ -89,6 +102,7 @@ From `.planning/codebase/CONCERNS.md`, relevantes às próximas fases:
 - Composição orgânica global aplicada a todos municípios sem flag próprio — Phase 1 (BASE-02) ataca isso.
 - `ibge.refresh()` é `NotImplementedError` — Phase 4 (GEN-01).
 - `date.today()` não-determinístico no render — atrapalha "data.json commitado" (Phase 3).
+- Deploy ao vivo NÃO confirmado: Task 1 (ativação manual do GitHub Pages, D-04) pendente — usuário precisa ativar Settings → Pages → Source = GitHub Actions e rodar o workflow antes de a URL pública funcionar
 
 ## Deferred Items
 
@@ -98,8 +112,9 @@ From `.planning/codebase/CONCERNS.md`, relevantes às próximas fases:
 
 ## Session Continuity
 
-Last session: 2026-06-23T12:01:22.920Z
-Stopped at: Phase 02 Plan 02 COMPLETO (5a03026, 1404b68, 6ed5474, d329239). 12 testes passando. data.json com informalidade (27/27 municípios).
+Last session: 2026-06-25T17:01:05.063Z
+Stopped at: Phase 5 context gathered
+Prev: Phase 4 context gathered
 Plano da Fase 2: ~~02-01 COMPLETO~~ → ~~02-02 COMPLETO~~ → 02-03 (painel renderInformalidade + nota fixa D-10 + region-strip; checkpoint visual).
 ANTES: RESEARCH (dce8e9b), context (be781f4); Fase 1 completa via scraper (0ea18ee, ac83138).
 
@@ -129,4 +144,4 @@ ACHADOS do scraping — SNIS Série Histórica (app4.cidades.gov.br/serieHistori
 - Próximo: construir scripts/scrape_snis.py, rodar -> data/raw/snis/snis_rms_sp.csv (25 munic, excl sorocaba+porto feliz), validar build 27, ajustar teste pend.height, 01-02-SUMMARY.md.
 - NOTA ESCOPO: fetch_snis.py (BigQuery) é beco sem saída (BD não tem RS). scrape_snis.py é a semente real de snis.py::refresh() (Fase 4/GEN-02).
 
-Resume file: None
+Resume file: .planning/phases/05-camada-viva-operacional/05-CONTEXT.md
