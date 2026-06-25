@@ -1,0 +1,16 @@
+# Telemetria REAL da operação de coleta de orgânicos + bioconversão BSF (classe: real).
+# Uma linha por (mes AAAA-MM, municipio) — o grão é mês × município (D-03).
+# A junção com o baseline público é por slug(municipio); use o nome exato de config/regions.yml.
+#
+# Massas em TONELADAS (t): t_org_coletada, larva_umida_t, larva_seca_t, frass_t.
+# partilha_rs em R$ (reais repassados ao fundo de partilha dos catadores naquele mês).
+# n_clientes = clientes B2B atendidos no mês.
+#
+# REGRA SAGRADA: nunca inventar número. Preencha da PESAGEM real.
+# Medida derivada/calculada (ex.: frass estimado, não pesado) → qualidade=estimativa
+# e cite a derivação na coluna fonte. Sem dado → não preencha a linha (não use 0).
+#
+# Operação ainda não iniciada: ZERO linhas de dado abaixo. O painel mostra estado
+# vazio honesto até a primeira medição. Quando a coleta começar, adicione as linhas
+# e rode `uv run obs build` — a seção "Operação ao vivo" acende sozinha.
+mes,municipio,n_clientes,t_org_coletada,larva_umida_t,larva_seca_t,frass_t,partilha_rs,qualidade,fonte
