@@ -120,3 +120,22 @@ footer{margin-top:46px;border-top:1px solid var(--line);padding-top:20px}
 .caveat b{font-family:'Space Grotesk'}
 .foot-meta{margin-top:18px;font-family:'IBM Plex Mono';font-size:11px;color:var(--ink-2)}
 .err{background:#f0ddd2;border:1px solid #e0c3b2;border-radius:12px;padding:24px;color:#7a3a22}
+
+/* Operação ao vivo — série temporal SVG real×projetado + cards acumulados (D-10/D-11) */
+.opwrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:clamp(18px,3vw,28px);box-shadow:var(--shadow)}
+.op-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+.op-title{font-family:'Space Grotesk';font-weight:600;font-size:15px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.op-leg{display:flex;gap:16px;font-family:'IBM Plex Mono';font-size:11px;color:var(--ink-2)}
+.op-leg span{display:inline-flex;align-items:center;gap:7px}
+.op-leg i{width:22px;height:0;display:inline-block;border-top-width:3px;border-top-style:solid}
+.op-leg .ll-real{border-top-color:var(--desvio)}
+.op-leg .ll-proj{border-top-color:var(--ink-2);border-top-style:dashed}
+.serie{width:100%;height:auto;display:block;margin:6px 0}
+/* Real = medição → destaque sólido (--desvio). Projetado = modelo → apagado tracejado (--ink-2). */
+.s-real{stroke:var(--desvio);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.s-proj{stroke:var(--ink-2);stroke-width:2;stroke-dasharray:4 3;stroke-linejoin:round}
+.axis{stroke:var(--line);stroke-width:1}
+.xlab{font-family:'IBM Plex Mono';font-size:10px;fill:var(--ink-2);text-anchor:middle}
+.ymax{font-family:'IBM Plex Mono';font-size:10px;fill:var(--ink-2)}
+.op-cap{font-size:12px;color:var(--ink-2);line-height:1.5;margin:8px 0 16px;max-width:70ch}
+.op-cards{margin-top:4px}

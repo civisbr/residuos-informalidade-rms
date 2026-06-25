@@ -97,6 +97,33 @@ function selectCity(nome) {
   recalc();
 }
 
+// Série temporal SVG inline à mão (D-10) — zero dependência. Desenha duas
+// linhas (real sólido × projetado tracejado) sobre o mesmo eixo. Pontos null
+// quebram a linha honestamente (mês sem dado nunca vira zero — regra sagrada).
+function svgSerie(serie, campoReal, campoProj) {
+  const W = 720, H = 240, P = 40;
+  if (!serie.length) return "";
+  const ys = serie.flatMap(d =>
+    [d[campoReal], d[campoProj]].filter(v => v != null));
+  const yMax = Math.max(1, ...ys);
+  const x = i => P + i * (W - 2 * P) / Math.max(1, serie.length - 1);
+  const y = v => H - P - (v / yMax) * (H - 2 * P);
+  const path = campo => serie
+    .map((d, i) => d[campo] == null ? null : `${x(i).toFixed(1)},${y(d[campo]).toFixed(1)}`)
+    .filter(Boolean).join(" ");
+  const xlabs = serie.map((d, i) =>
+    `<text x="${x(i).toFixed(1)}" y="${H - P + 16}" class="xlab">${d.mes.slice(2)}</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" class="serie" role="img"
+            aria-label="Série temporal: medição real (sólido) vs projeção do modelo (tracejado)">
+    <line x1="${P}" y1="${H - P}" x2="${W - P}" y2="${H - P}" class="axis"/>
+    <line x1="${P}" y1="${P}" x2="${P}" y2="${H - P}" class="axis"/>
+    <text x="${P}" y="${P - 12}" class="ymax">máx ~${fmt(yMax, 2)} t/mês</text>
+    <polyline points="${path(campoProj)}" class="s-proj" fill="none"/>
+    <polyline points="${path(campoReal)}" class="s-real" fill="none"/>
+    ${xlabs}
+  </svg>`;
+}
+
 function renderOperacao() {
   const op = DATA.operacao;
   if (!op || !op.tem_dado) {
@@ -107,7 +134,39 @@ function renderOperacao() {
        com a pesagem real e rode <code>uv run obs build</code>. O painel acende sozinho.</div>`;
     return;
   }
-  // Série temporal SVG + cards de impacto acumulado quando houver dado: Plano 05-02.
+  // COM dado: série real×projetado + 4 cards de impacto acumulado (D-09/D-10/D-11).
+  const a = op.acumulados || {};
+  const cards = [
+    ["c1", "DESVIO DE ATERRO ACUMULADO", fmt(a.desviado_t, 1), "t",
+     "orgânico medido fora do aterro desde o início da operação."],
+    ["c4", "RENDA A CATADORES ACUMULADA", "R$ " + fmt(a.partilha_rs / 1000, 1), "mil",
+     "repassado ao fundo de partilha — conecta com a informalidade da região."],
+    ["c2", "CO₂e EVITADO", fmt(a.co2e_evitado_t_derivado, 1), "t",
+     `<b>derivado</b> do desvio real (~${fmt(a.carros_equivalente_derivado, 1)} carros/ano, ilustrativo).`],
+    ["c3", "BIOCONVERSÃO ACUMULADA", fmt(a.larva_seca_t, 2), "t larva seca",
+     `+ <b>${fmt(a.frass_t, 1)} t</b> de frass (biofertilizante) medidos.`],
+  ];
+  const cardsHtml = cards.map(([cls, lab, val, u, sub]) =>
+    `<div class="ocard ${cls}"><div class="o-lab">${lab}</div>
+       <div class="o-val mono">${val} <small>${u}</small></div>
+       <div class="o-sub">${sub}</div></div>`).join("");
+
+  $("opSlot").innerHTML = `
+    <div class="opwrap">
+      <div class="op-head">
+        <div class="op-title">Bioconversão medida × projetada — base mensal
+          <span class="tag live">medição da operação</span></div>
+        <div class="op-leg">
+          <span><i class="ll-real"></i> medido (real)</span>
+          <span><i class="ll-proj"></i> projetado pelo modelo</span>
+        </div>
+      </div>
+      ${svgSerie(op.serie, "real_larva_seca_t", "projetado_larva_seca_t")}
+      <div class="op-cap">Linha cheia = pesagem real de larva seca. Tracejado =
+        o que o modelo (mesmos coeficientes do simulador) projetaria para o
+        orgânico desviado de cada mês. Mês sem medição quebra a linha — nunca é zero.</div>
+      <div class="out op-cards">${cardsHtml}</div>
+    </div>`;
 }
 
 function renderFlow() {
