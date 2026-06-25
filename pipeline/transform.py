@@ -8,6 +8,7 @@ from __future__ import annotations
 import polars as pl
 
 from .sources.base import slug
+from . import model
 
 
 def build_region(municipios: list[dict], ibge: pl.DataFrame, snis: pl.DataFrame,
@@ -129,35 +130,108 @@ def region_totals(df: pl.DataFrame) -> dict:
     }
 
 
+def _projetado_mensal(desviado_t_mes: float | None, coef: dict) -> dict:
+    """Roda model.project() sobre o desviado REAL do mês e devolve os derivados
+    de conversão em base MENSAL (LIVE-03, D-07/D-08).
+
+    Insight (RESEARCH Pattern 4): os outputs de conversão de project() são
+    LINEARES em desviado_t_ano. Logo, para "alimentar o modelo com o real" não
+    se inverte t_org_coletada em clientes×kg_dia de forma elaborada — basta
+    montar a chamada para que desviado_t_ano == desviado_t_mes × 12 e dividir os
+    _t_ano por 12 (anualização, Pitfall 2). NÃO reimplementa a conversão: reusa
+    model.project() (D-08), preservando a paridade com app.js.
+
+    Mês sem t_org_coletada (None) → todos os projetados são None (célula vazia),
+    NUNCA zero (regra sagrada — zero afirmaria "previmos zero").
+    """
+    if desviado_t_mes is None:
+        return {
+            "projetado_larva_seca_t": None,
+            "projetado_frass_t": None,
+            "projetado_co2e_t": None,
+        }
+    # desviado_t_ano = clientes*kg_dia/1000*365; queremos = desviado_t_mes*12.
+    # Com clientes=1: kg_dia = desviado_t_mes*12*1000/365.
+    kg_dia = desviado_t_mes * 12 * 1000 / 365
+    d = model.defaults(coef)
+    p = model.project(1, kg_dia, d["partilha_pct"], d["gate_fee"], coef)
+    return {
+        # ÷12: outputs _t_ano de project() → base mensal p/ confrontar a telemetria
+        "projetado_larva_seca_t": round(p["larva_seca_t_ano"] / 12, 4),
+        "projetado_frass_t": round(p["frass_t_ano"] / 12, 4),
+        "projetado_co2e_t": round(p["co2e_t_ano"] / 12, 4),
+    }
+
+
 def build_operacao(operacao: pl.DataFrame, coef: dict) -> dict:
-    """Agrega a telemetria REAL da operação numa série mensal regional (LIVE-04).
+    """Agrega a telemetria REAL da operação numa série mensal regional + o
+    projetado da calibração reusando model.project() (LIVE-03/LIVE-04).
 
     Estado vazio honesto (D-04, regra sagrada): sem telemetria → série vazia,
     acumulados None, tem_dado False. Nunca lança, nunca inventa número. Mês ou
     medida ausente nunca vira 0 — aparece como ausência, não como zero medido.
 
     Com dado: soma os municípios por mês (group_by, não loop) e ordena por mês
-    para determinismo (Pitfall 4 — sem relógio, ordenação estável). Os 4
-    acumulados (D-11) somam a série: desvio de aterro (t), renda a catadores
-    (R$), larva seca (t) e frass (t). O projetado da calibração e os derivados
-    co2e/carros ficam para o Plano 05-02 (dependem do teste de paridade).
+    para determinismo (Pitfall 4 — sem relógio, ordenação estável). Para cada
+    mês, computa o projetado_* via model.project() sobre o desviado real do mês
+    (÷12, base mensal — D-07/D-08, Pitfall 2). Mês sem t_org_coletada →
+    projetado_* = None (nunca zero).
+
+    Os 4 acumulados (D-11): desvio de aterro (t), renda a catadores (R$), larva
+    seca (t) e frass (t) — somados do REAL. Acrescenta os derivados que dependem
+    de coeficiente sobre o desviado real acumulado (co2e evitado t + carros
+    equivalentes), via model.project(), claramente rotulados como DERIVADOS (não
+    medidos direto). coefficients.yml e model.project() permanecem inalterados.
     """
     if operacao.height == 0 or "mes" not in operacao.columns:
         return {"serie": [], "acumulados": None, "tem_dado": False}
 
-    serie = operacao.group_by("mes").agg([
-        pl.col("n_clientes").sum().alias("n_clientes"),
-        pl.col("t_org_coletada").sum().alias("real_desviado_t"),
-        pl.col("larva_seca_t").sum().alias("real_larva_seca_t"),
-        pl.col("frass_t").sum().alias("real_frass_t"),
-        pl.col("partilha_rs").sum().alias("real_partilha_rs"),
+    # Soma que PRESERVA null: mês com todas as medidas ausentes fica null, não 0
+    # (regra sagrada — Polars .sum() de grupo all-null devolve 0; aqui não pode).
+    def _soma_honesta(col: str, alias: str) -> pl.Expr:
+        return (
+            pl.when(pl.col(col).is_not_null().any())
+              .then(pl.col(col).sum())
+              .otherwise(pl.lit(None))
+              .alias(alias)
+        )
+
+    serie_df = operacao.group_by("mes").agg([
+        _soma_honesta("n_clientes", "n_clientes"),
+        _soma_honesta("t_org_coletada", "real_desviado_t"),
+        _soma_honesta("larva_seca_t", "real_larva_seca_t"),
+        _soma_honesta("frass_t", "real_frass_t"),
+        _soma_honesta("partilha_rs", "real_partilha_rs"),
     ]).sort("mes")
 
-    acumulados = {
-        "desviado_t": float(serie["real_desviado_t"].sum() or 0),
-        "partilha_rs": float(serie["real_partilha_rs"].sum() or 0),
-        "larva_seca_t": float(serie["real_larva_seca_t"].sum() or 0),
-        "frass_t": float(serie["real_frass_t"].sum() or 0),
-    }
+    # Enriquecer cada mês com o projetado da calibração (model alimentado pelo real).
+    serie = serie_df.to_dicts()
+    for linha in serie:
+        linha.update(_projetado_mensal(linha.get("real_desviado_t"), coef))
 
-    return {"serie": serie.to_dicts(), "acumulados": acumulados, "tem_dado": True}
+    desviado_total = float(serie_df["real_desviado_t"].sum() or 0)
+    acumulados = {
+        "desviado_t": desviado_total,
+        "partilha_rs": float(serie_df["real_partilha_rs"].sum() or 0),
+        "larva_seca_t": float(serie_df["real_larva_seca_t"].sum() or 0),
+        "frass_t": float(serie_df["real_frass_t"].sum() or 0),
+    }
+    # Derivados de coeficiente sobre o desviado REAL acumulado (D-11): co2e
+    # evitado e carros equivalentes não são medidos direto — vêm de project()
+    # sobre o total desviado, rotulados como derivados no payload/painel.
+    if desviado_total > 0:
+        # _projetado_mensal devolve co2e em base "mensal" para um desviado mensal;
+        # como a conversão é linear em desviado, passar o TOTAL acumulado e ler o
+        # campo mensal dá exatamente co2e = desviado_total * co2e_por_t_organico
+        # (o ×12 da anualização e o ÷12 do retorno se cancelam). NÃO multiplicar.
+        deriv = _projetado_mensal(desviado_total, coef)
+        acumulados["co2e_evitado_t_derivado"] = round(deriv["projetado_co2e_t"], 2)
+        # carros: co2e / co2e_por_carro_ano (mesma equivalência de project())
+        acumulados["carros_equivalente_derivado"] = round(
+            acumulados["co2e_evitado_t_derivado"] / coef["clima"]["co2e_por_carro_ano"], 1
+        )
+    else:
+        acumulados["co2e_evitado_t_derivado"] = None
+        acumulados["carros_equivalente_derivado"] = None
+
+    return {"serie": serie, "acumulados": acumulados, "tem_dado": True}

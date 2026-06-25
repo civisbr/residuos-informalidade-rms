@@ -662,3 +662,117 @@ def test_paridade_mapa_py_js_cobre_chaves_do_modelo():
         "chaves de model.project() divergiram do mapa PARIDADE_PY_JS — "
         "todo campo Python precisa de um par JS conhecido (paridade travada)"
     )
+
+
+# ---------------------------------------------------------------------------
+# Fase 5 — Plano 05-02: calibração real×projetado em build_operacao() (LIVE-03)
+# ---------------------------------------------------------------------------
+
+# Schema da telemetria operacional (espelha pipeline/sources/operacao.SCHEMA).
+# Construído em memória — NÃO commitar dado no CSV real (D-01).
+_OP_SCHEMA = {
+    "mes": pl.String, "municipio": pl.String, "n_clientes": pl.Int64,
+    "t_org_coletada": pl.Float64, "larva_umida_t": pl.Float64,
+    "larva_seca_t": pl.Float64, "frass_t": pl.Float64,
+    "partilha_rs": pl.Float64, "qualidade": pl.String, "fonte": pl.String,
+    "key": pl.String,
+}
+
+
+def _op_fixture(linhas: list[dict]) -> pl.DataFrame:
+    """Monta um DataFrame de telemetria sintética em memória (sem CSV)."""
+    base = {k: None for k in _OP_SCHEMA}
+    return pl.DataFrame([{**base, **r} for r in linhas], schema=_OP_SCHEMA)
+
+
+def test_build_operacao_projetado_reusa_model_project():
+    """LIVE-03/D-07/D-08: para um mês com t_org_coletada, o projetado vem de
+    model.project() sobre o MESMO desviado, em base MENSAL (÷12)."""
+    op = _op_fixture([
+        {"mes": "2026-01", "municipio": "Sorocaba", "n_clientes": 10,
+         "t_org_coletada": 30.0, "larva_seca_t": 1.4, "frass_t": 10.2,
+         "partilha_rs": 5000.0, "qualidade": "real", "fonte": "pesagem",
+         "key": "sorocaba"},
+    ])
+    out = transform.build_operacao(op, COEF)
+    assert out["tem_dado"] is True
+    linha = out["serie"][0]
+    assert linha["real_desviado_t"] == pytest.approx(30.0)
+
+    # Coerência com model.project() sobre o mesmo desviado, ÷12 (base mensal).
+    d = model.defaults(COEF)
+    kg_dia = 30.0 * 12 * 1000 / 365
+    p = model.project(1, kg_dia, d["partilha_pct"], d["gate_fee"], COEF)
+    assert linha["projetado_larva_seca_t"] == pytest.approx(p["larva_seca_t_ano"] / 12, rel=1e-6)
+    assert linha["projetado_frass_t"] == pytest.approx(p["frass_t_ano"] / 12, rel=1e-6)
+    assert linha["projetado_co2e_t"] == pytest.approx(p["co2e_t_ano"] / 12, rel=1e-6)
+    assert linha["projetado_larva_seca_t"] > 0
+
+
+def test_build_operacao_mes_incompleto_projetado_null_nunca_zero():
+    """Regra sagrada / Pitfall T-05-07: mês sem t_org_coletada → projetado_* é
+    None (célula vazia), NUNCA 0."""
+    op = _op_fixture([
+        {"mes": "2026-01", "municipio": "Sorocaba", "n_clientes": 10,
+         "t_org_coletada": 30.0, "larva_seca_t": 1.4, "frass_t": 10.2,
+         "partilha_rs": 5000.0, "qualidade": "real", "fonte": "pesagem",
+         "key": "sorocaba"},
+        # mês sem coleta medida: t_org_coletada None
+        {"mes": "2026-02", "municipio": "Sorocaba", "n_clientes": 10,
+         "t_org_coletada": None, "larva_seca_t": None, "frass_t": None,
+         "partilha_rs": None, "qualidade": "real", "fonte": "sem pesagem",
+         "key": "sorocaba"},
+    ])
+    out = transform.build_operacao(op, COEF)
+    # série ordenada por mês (determinismo, Pitfall 4)
+    meses = [l["mes"] for l in out["serie"]]
+    assert meses == ["2026-01", "2026-02"], "série deve estar ordenada por mês"
+
+    fev = out["serie"][1]
+    for campo in ("projetado_larva_seca_t", "projetado_frass_t", "projetado_co2e_t"):
+        assert fev[campo] is None, (
+            f"mês sem t_org_coletada → {campo} deve ser None (nunca 0 — regra sagrada)"
+        )
+        assert fev[campo] != 0
+
+
+def test_build_operacao_acumulados_derivados_co2e_carros():
+    """LIVE-04/D-11: acumulados incluem co2e evitado e carros equivalentes
+    DERIVADOS (via model.project() sobre o desviado real total), não medidos."""
+    op = _op_fixture([
+        {"mes": "2026-01", "municipio": "Sorocaba", "t_org_coletada": 30.0,
+         "larva_seca_t": 1.4, "frass_t": 10.2, "partilha_rs": 5000.0,
+         "n_clientes": 10, "qualidade": "real", "fonte": "x", "key": "sorocaba"},
+        {"mes": "2026-02", "municipio": "Sorocaba", "t_org_coletada": 20.0,
+         "larva_seca_t": 0.9, "frass_t": 6.8, "partilha_rs": 3000.0,
+         "n_clientes": 10, "qualidade": "real", "fonte": "x", "key": "sorocaba"},
+    ])
+    out = transform.build_operacao(op, COEF)
+    acum = out["acumulados"]
+    assert acum["desviado_t"] == pytest.approx(50.0)
+    assert acum["partilha_rs"] == pytest.approx(8000.0)
+    # co2e derivado = desviado_total * co2e_por_t_organico
+    esperado_co2e = 50.0 * COEF["clima"]["co2e_por_t_organico"]
+    assert acum["co2e_evitado_t_derivado"] == pytest.approx(esperado_co2e, rel=1e-3)
+    esperado_carros = esperado_co2e / COEF["clima"]["co2e_por_carro_ano"]
+    assert acum["carros_equivalente_derivado"] == pytest.approx(esperado_carros, rel=1e-2)
+
+
+def test_build_operacao_estado_vazio_sem_dado():
+    """Estado vazio honesto preservado: frame vazio → tem_dado False, sem inventar."""
+    vazio = pl.DataFrame(schema=_OP_SCHEMA)
+    out = transform.build_operacao(vazio, COEF)
+    assert out == {"serie": [], "acumulados": None, "tem_dado": False}
+
+
+def test_build_operacao_nao_altera_coefficients_yml():
+    """Regra sagrada: a fase compara contra os coeficientes, não os reescreve."""
+    antes = (ROOT / "config/coefficients.yml").read_text(encoding="utf-8")
+    op = _op_fixture([
+        {"mes": "2026-01", "municipio": "Sorocaba", "t_org_coletada": 30.0,
+         "larva_seca_t": 1.4, "frass_t": 10.2, "partilha_rs": 5000.0,
+         "n_clientes": 10, "qualidade": "real", "fonte": "x", "key": "sorocaba"},
+    ])
+    transform.build_operacao(op, COEF)
+    depois = (ROOT / "config/coefficients.yml").read_text(encoding="utf-8")
+    assert antes == depois, "coefficients.yml não deve ser tocado pela calibração"
