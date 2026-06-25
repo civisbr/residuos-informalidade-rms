@@ -568,3 +568,97 @@ def test_payload_tem_operacao():
 
     for chave in ["municipios", "totais", "meta", "coeficientes", "simulador_defaults"]:
         assert chave in d, f"chave existente '{chave}' não deve sumir do payload"
+
+
+# ---------------------------------------------------------------------------
+# Fase 5 — Plano 05-02: paridade model.py ↔ app.js::project() (CONCERNS #7)
+# ---------------------------------------------------------------------------
+
+# Mapa canônico de nomes Python (model.project) ↔ JS (app.js::project).
+# Os nomes DIFEREM entre as linguagens — esta é a tabela de verdade. Uma
+# renomeação silenciosa em qualquer lado quebra os testes abaixo (foi
+# exatamente assim que `carros_equivalente` vs `carros` divergiu, CONCERNS #7).
+PARIDADE_PY_JS = {
+    "desviado_t_ano": "desviado",
+    "co2e_t_ano": "co2e",
+    "carros_equivalente": "carros",
+    "larva_seca_t_ano": "larvaSeca",
+    "frass_t_ano": "frass",
+    "receita_ano": "receita",
+    "fundo_partilha_ano": "fundo",
+    "catadores_sustentados": "catadores",
+    "pct_organico_municipal": "pctOrg",
+}
+
+
+def test_paridade_project_contrato_python_congelado():
+    """CONCERNS #7: congela o contrato numérico de model.project() com inputs
+    default fixos. Mudar a lógica/coeficientes sem ajustar o teste quebra aqui —
+    é a âncora canônica sobre a qual a calibração da Task 2 será construída."""
+    d = model.defaults(COEF)
+    # organico_municipal fixo (mesmo de test_modelo_break_even) → pct calculável
+    r = model.project(d["clientes"], d["kg_dia"], d["partilha_pct"], d["gate_fee"],
+                      COEF, 116280)
+
+    # As 9 chaves esperadas existem e nenhuma a mais/a menos (contrato fechado).
+    assert set(r.keys()) == set(PARIDADE_PY_JS.keys()), (
+        "model.project() mudou o conjunto de campos retornados — atualize "
+        "PARIDADE_PY_JS e o espelho em app.js (paridade, CONCERNS #7)"
+    )
+
+    # Valores canônicos derivados das fórmulas (defaults: 36 clientes, 80 kg/dia,
+    # 30%, gate 400; coeficientes de config/coefficients.yml). Congelam a lógica.
+    assert r["desviado_t_ano"] == pytest.approx(1051.2, abs=0.1)       # 36*80/1000*365
+    assert r["co2e_t_ano"] == pytest.approx(683.3, abs=0.1)            # *0.65
+    assert r["carros_equivalente"] == pytest.approx(148.5, abs=0.2)    # /4.6
+    assert r["larva_seca_t_ano"] == pytest.approx(47.3, abs=0.2)       # *0.15*0.30
+    assert r["frass_t_ano"] == pytest.approx(367.9, abs=0.2)           # *0.35
+    assert r["receita_ano"] == pytest.approx(172800.0, abs=1)          # 36*400*12
+    assert r["fundo_partilha_ano"] == pytest.approx(51840.0, abs=1)    # *30%
+    assert r["catadores_sustentados"] == pytest.approx(2.9, abs=0.1)   # /(1500*12)
+    assert 0 < r["pct_organico_municipal"] < 5
+
+
+def test_paridade_project_nomes_js_existem_em_app_js():
+    """CONCERNS #7 (Pitfall 1): parse textual de site/app.js confirma que o
+    objeto retornado por project() em JS contém EXATAMENTE os nomes esperados.
+    Captura renomeação silenciosa de campo cross-language sem rodar JS (o CI só
+    tem pytest, não node)."""
+    import re
+    src = (ROOT / "site" / "app.js").read_text(encoding="utf-8")
+
+    # Isola o corpo do return de project() em JS: `return { ... };`
+    m = re.search(r"function project\([^)]*\)\s*\{.*?return\s*\{(.*?)\};",
+                  src, re.DOTALL)
+    assert m, "não encontrei o `return { ... }` de project() em app.js"
+    return_body = m.group(1)
+
+    # Coleta as chaves de topo do objeto literal. Cada item começa logo após
+    # `{` ou `,` (no nível do literal) e é o identificador seguido de ':' (par
+    # explícito) ou de ',' / fim (shorthand). Ancorar em ',' ou '{' à esquerda
+    # evita capturar identificadores DENTRO de uma expressão de valor (ex.:
+    # `co2e_por_carro_ano` em `carros: co2e / cl.co2e_por_carro_ano`).
+    chaves_js = set(re.findall(
+        r"(?:[{,])\s*([A-Za-z_]\w*)\s*(?=[:,}])", "{" + return_body + "}"
+    ))
+
+    esperadas_js = set(PARIDADE_PY_JS.values())
+    faltando = esperadas_js - chaves_js
+    assert not faltando, (
+        f"app.js::project() não retorna mais o(s) campo(s) {faltando} — "
+        f"renomeação silenciosa quebra a paridade com model.py (CONCERNS #7). "
+        f"Chaves JS achadas: {sorted(chaves_js)}"
+    )
+
+
+def test_paridade_mapa_py_js_cobre_chaves_do_modelo():
+    """CONCERNS #7: o mapa Py↔JS deve cobrir exatamente as chaves reais de
+    model.project() — nem campo Python órfão (sem par JS) nem entrada obsoleta
+    no mapa. Uma divergência futura em qualquer dos lados falha aqui."""
+    d = model.defaults(COEF)
+    r = model.project(d["clientes"], d["kg_dia"], d["partilha_pct"], d["gate_fee"],
+                      COEF, 116280)
+    assert set(r.keys()) == set(PARIDADE_PY_JS.keys()), (
+        "chaves de model.project() divergiram do mapa PARIDADE_PY_JS — "
+        "todo campo Python precisa de um par JS conhecido (paridade travada)"
+    )
