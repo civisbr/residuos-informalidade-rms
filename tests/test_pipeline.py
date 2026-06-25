@@ -4,7 +4,7 @@ import pytest
 import yaml
 import polars as pl
 from pipeline.sources import ibge, snis
-from pipeline.sources import ibge_informalidade, rais, pnad_regional
+from pipeline.sources import ibge_informalidade, rais, pnad_regional, operacao
 from pipeline import transform, model
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -535,3 +535,36 @@ def test_upsert_preserva_populacao_zero():
         "WR-01: com check explícito, populacao=0 curado deve ser preservado "
         "(0 é dado válido — não é campo vazio)"
     )
+
+
+# ---------------------------------------------------------------------------
+# Fase 5 — Plano 05-01: camada viva (operacional) — LIVE-01/LIVE-02
+# ---------------------------------------------------------------------------
+
+def test_operacao_load_vazio_tem_key():
+    """LIVE-02 / CR-01: operacao.load() com o CSV-template (sem linhas de dado)
+    devolve um frame vazio MAS com coluna 'key' — sem isso joins/cold-start quebram."""
+    import os
+    os.chdir(ROOT)
+    df = operacao.load(ROOT)
+    assert "key" in df.columns, "operacao.load() vazio deve ter coluna 'key'"
+    assert df.height == 0, (
+        "operação ainda não roda — o template não tem linhas de dado (D-01/D-02)"
+    )
+
+
+def test_payload_tem_operacao():
+    """LIVE-02: data.json contém a chave 'operacao' com estado vazio honesto e
+    preserva as chaves existentes do payload (nunca omitir a chave operacao)."""
+    import json
+    data_path = ROOT / "site" / "data.json"
+    assert data_path.exists(), "site/data.json deve existir — rodar 'uv run obs build --region rms'"
+    d = json.loads(data_path.read_text())
+
+    assert "operacao" in d, "chave 'operacao' ausente no payload"
+    assert d["operacao"]["tem_dado"] is False, "sem telemetria → tem_dado deve ser False"
+    assert d["operacao"]["serie"] == [], "sem telemetria → serie deve ser vazia"
+    assert d["operacao"]["acumulados"] is None, "sem telemetria → acumulados deve ser None"
+
+    for chave in ["municipios", "totais", "meta", "coeficientes", "simulador_defaults"]:
+        assert chave in d, f"chave existente '{chave}' não deve sumir do payload"
