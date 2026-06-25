@@ -93,7 +93,21 @@ function selectCity(nome) {
   renderFlow();
   renderKpis();
   renderInformalidade();
+  renderOperacao();
   recalc();
+}
+
+function renderOperacao() {
+  const op = DATA.operacao;
+  if (!op || !op.tem_dado) {
+    // Estado vazio honesto (D-02): operação ainda não roda — nunca telemetria fabricada.
+    $("opSlot").innerHTML =
+      `<div class="pendbox"><b>Operação ainda não iniciada — sem medição real.</b>
+       Quando a coleta começar, preencha <code>data/raw/operacao/operacao_rms.csv</code>
+       com a pesagem real e rode <code>uv run obs build</code>. O painel acende sozinho.</div>`;
+    return;
+  }
+  // Série temporal SVG + cards de impacto acumulado quando houver dado: Plano 05-02.
 }
 
 function renderFlow() {
