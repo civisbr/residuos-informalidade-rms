@@ -13,7 +13,8 @@ from . import model
 
 
 def to_payload(region_key: str, region_meta: dict, df: pl.DataFrame,
-               totals: dict, coef: dict, pnad_df: pl.DataFrame | None = None) -> dict:
+               totals: dict, coef: dict, pnad_df: pl.DataFrame | None = None,
+               operacao_payload: dict | None = None) -> dict:
     municipios = []
     for r in df.iter_rows(named=True):
         municipios.append({
@@ -68,6 +69,10 @@ def to_payload(region_key: str, region_meta: dict, df: pl.DataFrame,
         "simulador_defaults": model.defaults(coef),
         "totais": totals,
         "municipios": municipios,
+        # Telemetria real da operação (LIVE). Chave SEMPRE presente — estado vazio
+        # honesto quando não há medição (nunca omitir a chave, nunca inventar número).
+        "operacao": operacao_payload if operacao_payload is not None
+                    else {"serie": [], "acumulados": None, "tem_dado": False},
     }
 
 

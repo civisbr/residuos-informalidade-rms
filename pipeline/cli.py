@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 import yaml
 
-from .sources import ibge, snis, ibge_informalidade, rais, pnad_regional
+from .sources import ibge, snis, ibge_informalidade, rais, pnad_regional, operacao
 from . import transform, render
 
 
@@ -34,10 +34,13 @@ def cmd_build(args) -> int:
     df_inf = ibge_informalidade.load(root)
     df_rais = rais.load(root)
     df_pnad = pnad_regional.load(root)
+    df_op = operacao.load(root)
 
     df = transform.build_region(meta["municipios"], df_ibge, df_snis, df_inf, df_rais, coef)
     totals = transform.region_totals(df)
-    payload = render.to_payload(args.region, meta, df, totals, coef, pnad_df=df_pnad)
+    op = transform.build_operacao(df_op, coef)
+    payload = render.to_payload(args.region, meta, df, totals, coef,
+                                pnad_df=df_pnad, operacao_payload=op)
     out = render.write(payload, root)
 
     com = totals["municipios_com_dado"]
@@ -51,6 +54,10 @@ def cmd_build(args) -> int:
     if com < tot:
         print(f"  {tot - com} municípios pendentes — rode o refresh do SNIS "
               f"(scripts/refresh_snis.md)")
+    if op["tem_dado"]:
+        print(f"  operação: {len(op['serie'])} mês(es) de telemetria real")
+    else:
+        print("  operação: sem medição real ainda — seção 'Operação ao vivo' em estado vazio")
     return 0
 
 

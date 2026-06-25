@@ -839,5 +839,10 @@
       "flag_proxy": "real",
       "fonte_inf": "Censo Demográfico 2022, IBGE, SIDRA t/10261, n6, v/4090, categorias 31723+79368+45935+45937+31731 / Total (96165). Definição IBGE de informalidade (5 componentes). https://sidra.ibge.gov.br/tabela/10261"
     }
-  ]
+  ],
+  "operacao": {
+    "serie": [],
+    "acumulados": null,
+    "tem_dado": false
+  }
 }
