@@ -28,16 +28,25 @@ do simulador. Se a credibilidade falha, o produto inteiro falha.
 - ✓ Painel estático lendo `data.json` (`site/`) com baseline e simulador separados — M0
 - ✓ `config/regions.yml` com os 27 municípios da RMS + adaptadores `sources/ibge.py` (cache) e `sources/snis.py` (CSV local) — M0
 - ✓ Testes de sanidade offline (`tests/test_pipeline.py`) — M0
+- ✓ **Deploy contínuo (CI)**: workflow `build.yml` reconstrói `site/data.json` e publica no Pages a cada push na `main`; `render.py` determinístico (`gerado_em` via `BUILD_DATE`); README com badge de build + link público; `data.json` commitado — Validado na Fase 3 (M3). *Ressalva: ativação do GitHub Pages (URL ao vivo, DEPLOY-02) adiada por decisão do usuário — rastreada em `03-HUMAN-UAT.md`.*
+
+### Validated
+
+<!-- Shipped no milestone v1.0 (Fases 1-5). -->
+
+- ✓ **M1 — Baseline real da RMS** — v1.0: 27 municípios com SNIS-RS 2022 real; Sorocaba (gravimetria PMGIRS 0.48) e Porto Feliz (PMGIRS 2017) completos com `fonte` citada.
+- ✓ **M2 — Camada de informalidade** — v1.0: informalidade por município (Censo 2022) + proxy de formalização (RAIS 2023), separados de estimativa, com contexto PNAD regional e nota fixa de subcontagem (D-10).
+- ✓ **M3 — Deploy contínuo no GitHub Pages** — v1.0 *(código completo; URL ao vivo pendente de ativação manual do Pages — ver `03-HUMAN-UAT.md` / STATE.md Deferred Items)*: workflow reconstrói `data.json` e publica; badge + link; `data.json` commitado; render determinístico.
+- ✓ **M4 — Generalizar para qualquer cidade BR** — v1.0 *(UAT de rede pendente — ver `04-HUMAN-UAT.md`)*: `ibge.refresh()`/`snis.refresh()` por `--region`, erro amigável com sugestão, guia "5 minutos" no README; terceiro gera outra região só editando `regions.yml`.
+- ✓ **M5 — Camada viva (operacional)** — v1.0: esquema de telemetria (CSV-template), `sources/operacao.py` (load), seção "Operação ao vivo" com série temporal SVG real×projetado (calibração reusando `model.project()`) e 4 cards de impacto acumulado — "esqueleto vivo" em estado vazio honesto até a primeira medição.
 
 ### Active
 
-<!-- Roadmap autoral do GSD.md, M1→M5. Cada milestone = uma fase. -->
+<!-- Próximo milestone (v1.1) — definir via /gsd-new-milestone. Candidatos abaixo. -->
 
-- [ ] **M1 — Baseline real da RMS**: 27 municípios com linha no SNIS (real ou pendente honesto); Sorocaba + Porto Feliz completos a partir de fonte citável (gravimetria PMGIRS, RSU/reciclado/cooperados), com `fonte` em cada linha.
-- [ ] **M2 — Camada de informalidade**: indicador de informalidade por município, com fonte (PNAD/Censo, proxy RAIS/CAGED vs. cooperados), separado de estimativa, com nota de subcontagem da população catadora.
-- [ ] **M3 — Deploy contínuo no GitHub Pages**: push na `main` reconstrói `data.json` e publica; badge de build + URL pública; `data.json` commitado.
-- [ ] **M4 — Generalizar para qualquer cidade BR**: terceiro gera o painel de outra região só editando `regions.yml` (sem código); `ibge.refresh()` implementado; `snis.refresh()` documentado; erro amigável quando município não resolve; doc "crie o painel da sua cidade em 5 min".
-- [ ] **M5 — Camada viva (operacional)**: sobrepor telemetria real da operação ao baseline público; esquema de telemetria; `sources/operacao.py`; série temporal baseline + medições lado a lado; painel de impacto acumulado.
+- [ ] Fechar as ressalvas do v1.0: ativar GitHub Pages (URL ao vivo) e rodar o UAT de rede das Fases 3 e 4 (`/gsd-verify-work 3` e `4`).
+- [ ] Backlog frio (ver Out of Scope): mapa coroplético, comparação de pares município×mediana, export PDF por município.
+- [ ] Informalidade/RAIS para qualquer região (hoje RMS-only; fora da RMS = `pendente`).
 
 ### Out of Scope
 
@@ -104,6 +113,6 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-**Current state:** Fase 1 (baseline real RMS) e Fase 2 (camada de informalidade) completas. INFO-01..04 validados na Fase 2 — painel mostra informalidade por município (Censo 2022) + proxy de formalização (RAIS) com flags real/pendente, contexto PNAD como estimativa regional, e nota fixa de subcontagem da população catadora (D-10). Próximo: Fase 3 (deploy contínuo GitHub Pages).
+**Current state:** 🎉 **Milestone v1.0 (MVP — Observatório RMS) completo** — 5 fases, 13 planos, ~3185 LOC (Python/Polars + front vanilla), 21→25/06/2026. O painel leva a RMS de um esqueleto a um observatório com baseline público real (SNIS/IBGE/PMGIRS), camada de informalidade (Censo/RAIS/PNAD), deploy contínuo, generalização para qualquer cidade BR e a camada viva operacional (telemetria real×projetada em estado vazio honesto). Fechamento foi **override closeout**: URL pública do Pages ainda não ativada e UAT de rede das Fases 3/4 pendente (ver STATE.md Deferred Items). Próximo: `/gsd-new-milestone` (v1.1).
 
-*Last updated: 2026-06-23 after Phase 2 completion*
+*Last updated: 2026-06-26 after v1.0 milestone completion*

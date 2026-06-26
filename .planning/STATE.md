@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 04
-current_phase_name: generalizar-para-qualquer-cidade-br
-status: verifying
+current_phase: 0
+status: Awaiting next milestone
 stopped_at: Phase 5 context gathered
-last_updated: "2026-06-25T17:01:05.074Z"
-last_activity: 2026-06-24
+last_updated: "2026-06-26T00:57:16.634Z"
+last_activity: 2026-06-26
+last_activity_desc: Milestone v1.0 completed and archived
 progress:
   total_phases: 5
-  completed_phases: 4
-  total_plans: 11
-  completed_plans: 11
-  percent: 80
+  completed_phases: 5
+  total_plans: 13
+  completed_plans: 13
+  percent: 100
 ---
 
 # Project State
@@ -23,23 +23,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-21)
 
 **Core value:** Credibilidade do dado — nunca apresentar projeção como medição, nunca inventar número.
-**Current focus:** Phase 04 — generalizar-para-qualquer-cidade-br
+**Current focus:** Phase 05 — camada-viva-operacional
 
 ## Current Position
 
-Phase: 04 (generalizar-para-qualquer-cidade-br) — EXECUTING
-Phase: 2 (Camada de informalidade) — EXECUTANDO. 3 planos (waves 1→2→3). Plan 01 COMPLETO.
-Plan: 4 of 4
-Status: Phase complete — ready for verification
-Last activity: 2026-06-24
-
-Progress: [██████████] 100%
+Phase: Milestone v1.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-06-26 — Milestone v1.0 completed and archived
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 5
+- Total plans completed: 7
 - Average duration: — min
 - Total execution time: 0 hours
 
@@ -49,6 +46,7 @@ Progress: [██████████] 100%
 |-------|-------|-------|----------|
 | 02 | 3 | - | - |
 | 03 | 2 | - | - |
+| 05 | 2 | - | - |
 
 **Recent Trend:**
 
@@ -62,6 +60,8 @@ Progress: [██████████] 100%
 | Phase 03 P01 | 15 | 2 tasks | 3 files |
 | Phase 03 P02 | 2 | 2 tasks | 1 files |
 | Phase 04 P02 | 15 | 2 tasks | 4 files |
+| Phase 05 P01 | 14min | 3 tasks | 10 files |
+| Phase 05 P02 | 12min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -89,6 +89,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 04-02: taxa_inf_media_rms renomeada para taxa_inf_media — rename atômico em transform.py, tests e app.js
 - [Phase ?]: 04-02: sort com nulls_last=True para municípios sem subregiao ficarem no final
 - [Phase ?]: 04-02: buildCitySelect dinâmico com somenteNull — label Municípios para região sem sub-regiões
+- [Phase ?]: 05-01: schema de telemetria em toneladas espelha model.project() (D-05); grão mês×município sem .unique (D-03); operacao.py só load(), sem rede (D-04)
+- [Phase ?]: 05-01: chave operacao SEMPRE presente no payload com estado vazio honesto; nova classe visual .tag.live inconfundível das 3 existentes
 
 ### Pending Todos
 
@@ -106,13 +108,19 @@ From `.planning/codebase/CONCERNS.md`, relevantes às próximas fases:
 
 ## Deferred Items
 
+Itens reconhecidos e diferidos no fechamento do milestone v1.0 em 2026-06-25 (override closeout):
+
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| *(none)* | | | |
+| uat_gap | Phase 03 — 03-HUMAN-UAT.md: 1 cenário pendente (URL pública do Pages não confirmada ao vivo; ativação manual de Settings → Pages adiada) | partial | 2026-06-25 |
+| uat_gap | Phase 04 — 04-HUMAN-UAT.md: 4 cenários de rede pendentes (refresh-ibge, typo amigável, refresh-snis, fluxo do terceiro) | partial | 2026-06-25 |
+| verification_gap | Phase 03 — 03-VERIFICATION.md | human_needed | 2026-06-25 |
+| verification_gap | Phase 04 — 04-VERIFICATION.md | human_needed | 2026-06-25 |
+| verification_gap | Phase 01 — sem 01-VERIFICATION.md (nunca verificada formalmente; código verde nos testes) | missing | 2026-06-25 |
 
 ## Session Continuity
 
-Last session: 2026-06-25T17:01:05.063Z
+Last session: 2026-06-25T19:02:32.006Z
 Stopped at: Phase 5 context gathered
 Prev: Phase 4 context gathered
 Plano da Fase 2: ~~02-01 COMPLETO~~ → ~~02-02 COMPLETO~~ → 02-03 (painel renderInformalidade + nota fixa D-10 + region-strip; checkpoint visual).
@@ -144,4 +152,8 @@ ACHADOS do scraping — SNIS Série Histórica (app4.cidades.gov.br/serieHistori
 - Próximo: construir scripts/scrape_snis.py, rodar -> data/raw/snis/snis_rms_sp.csv (25 munic, excl sorocaba+porto feliz), validar build 27, ajustar teste pend.height, 01-02-SUMMARY.md.
 - NOTA ESCOPO: fetch_snis.py (BigQuery) é beco sem saída (BD não tem RS). scrape_snis.py é a semente real de snis.py::refresh() (Fase 4/GEN-02).
 
-Resume file: .planning/phases/05-camada-viva-operacional/05-CONTEXT.md
+Resume file: None
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
