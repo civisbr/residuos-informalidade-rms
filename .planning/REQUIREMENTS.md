@@ -25,24 +25,24 @@ mapeia a uma fase do roadmap (1 milestone = 1 fase).
 
 ### Deploy (M3 — Deploy contínuo no GitHub Pages)
 
-- [ ] **DEPLOY-01**: Workflow `.github/workflows/build.yml` revisado e reconstrói `data.json` no push à `main`
-- [ ] **DEPLOY-02**: GitHub Pages ativado (branch/Actions) e servindo o site
-- [ ] **DEPLOY-03**: README com badge de build e URL pública
-- [ ] **DEPLOY-04**: `site/data.json` commitado para o Pages funcionar mesmo sem rebuild
+- [x] **DEPLOY-01**: Workflow `.github/workflows/build.yml` revisado e reconstrói `data.json` no push à `main`
+- [x] **DEPLOY-02**: GitHub Pages ativado (branch/Actions) e servindo o site
+- [x] **DEPLOY-03**: README com badge de build e URL pública
+- [x] **DEPLOY-04**: `site/data.json` commitado para o Pages funcionar mesmo sem rebuild
 
 ### Generalização (M4 — Qualquer cidade BR)
 
-- [ ] **GEN-01**: `ibge.refresh()` implementado (API localidades + população) regrava o cache
-- [ ] **GEN-02**: `snis.refresh()` documentado e, se viável, automatizado
-- [ ] **GEN-03**: Erro amigável quando um município não resolve no IBGE
-- [ ] **GEN-04**: Doc "Crie o painel da sua cidade em 5 minutos" no README; terceiro gera outra região só editando `regions.yml`
+- [x] **GEN-01**: `ibge.refresh()` implementado (API localidades + população) regrava o cache
+- [x] **GEN-02**: `snis.refresh()` documentado e, se viável, automatizado
+- [x] **GEN-03**: Erro amigável quando um município não resolve no IBGE
+- [x] **GEN-04**: Doc "Crie o painel da sua cidade em 5 minutos" no README; terceiro gera outra região só editando `regions.yml`
 
 ### Camada viva (M5 — Operacional)
 
-- [ ] **LIVE-01**: Esquema de telemetria definido (t coletadas/mês por cliente, larva, frass, partilha)
-- [ ] **LIVE-02**: Fonte `sources/operacao.py` lê a telemetria (CSV/planilha exportada)
-- [ ] **LIVE-03**: Série temporal no painel: baseline público + medições reais lado a lado
-- [ ] **LIVE-04**: Painel de impacto acumulado (desvio de aterro, renda a catadores no tempo)
+- [x] **LIVE-01**: Esquema de telemetria definido (t coletadas/mês por cliente, larva, frass, partilha)
+- [x] **LIVE-02**: Fonte `sources/operacao.py` lê a telemetria (CSV/planilha exportada)
+- [x] **LIVE-03**: Série temporal no painel: baseline público + medições reais lado a lado
+- [x] **LIVE-04**: Painel de impacto acumulado (desvio de aterro, renda a catadores no tempo)
 
 ## v2 Requirements
 
@@ -75,18 +75,18 @@ Mapeamento 1:1 — cada milestone do GSD.md vira uma fase.
 | INFO-02 | Phase 2 | Complete |
 | INFO-03 | Phase 2 | Complete |
 | INFO-04 | Phase 2 | Complete |
-| DEPLOY-01 | Phase 3 | Pending |
-| DEPLOY-02 | Phase 3 | Pending |
-| DEPLOY-03 | Phase 3 | Pending |
-| DEPLOY-04 | Phase 3 | Pending |
-| GEN-01 | Phase 4 | Pending |
-| GEN-02 | Phase 4 | Pending |
-| GEN-03 | Phase 4 | Pending |
-| GEN-04 | Phase 4 | Pending |
-| LIVE-01 | Phase 5 | Pending |
-| LIVE-02 | Phase 5 | Pending |
-| LIVE-03 | Phase 5 | Pending |
-| LIVE-04 | Phase 5 | Pending |
+| DEPLOY-01 | Phase 3 | Complete |
+| DEPLOY-02 | Phase 3 | Complete |
+| DEPLOY-03 | Phase 3 | Complete |
+| DEPLOY-04 | Phase 3 | Complete |
+| GEN-01 | Phase 4 | Complete |
+| GEN-02 | Phase 4 | Complete |
+| GEN-03 | Phase 4 | Complete |
+| GEN-04 | Phase 4 | Complete |
+| LIVE-01 | Phase 5 | Complete |
+| LIVE-02 | Phase 5 | Complete |
+| LIVE-03 | Phase 5 | Complete |
+| LIVE-04 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 21 total
