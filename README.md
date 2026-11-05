@@ -1,6 +1,6 @@
 # Observatório de Resíduos & Informalidade
 
-[![Build](https://github.com/civisbr/residuos-informalidade-rms/actions/workflows/build.yml/badge.svg)](https://github.com/civisbr/residuos-informalidade-rms/actions/workflows/build.yml) **[Ver painel ao vivo →](https://civisbr.github.io/residuos-informalidade-rms/)**
+[![Deploy](https://github.com/civisbr/residuos-informalidade-rms/actions/workflows/deploy.yml/badge.svg)](https://github.com/civisbr/residuos-informalidade-rms/actions/workflows/deploy.yml) **[Abrir o painel de Sorocaba →](https://residuos-informalidade-rms.pages.dev)** · [Sobre o projeto](https://civisbr.github.io/residuos-informalidade-rms/)
 
 > Repositório: **`residuos-informalidade-rms`** · CivisBR · referência: Região Metropolitana de Sorocaba (RMS)
 

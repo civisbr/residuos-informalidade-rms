@@ -35,12 +35,14 @@ com fonte, separado do que é estimativa.
 - [ ] Card/seção de informalidade no painel, com flag de qualidade
 - [ ] Nota explícita de subcontagem da população catadora
 
-## M3 — Deploy contínuo no GitHub Pages
-**Pronto quando:** push na `main` reconstrói `data.json` e publica o site.
-- [ ] Revisar `.github/workflows/build.yml`
+## M3 — Deploy contínuo (Cloudflare + GitHub Pages)
+**Pronto quando:** push na `main` publica o painel no Cloudflare e a página explicativa no Pages.
+- [x] `.github/workflows/deploy.yml` (testa → build `--region rms` → Cloudflare Pages)
+- [x] `.github/workflows/pages.yml` (`landing/` → GitHub Pages, explica o projeto + link p/ Cloudflare)
+- [ ] Secrets `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID` no repositório
 - [ ] Ativar Pages (branch/Actions) no repositório
-- [ ] Badge de build no README + URL pública
-- [ ] `data.json` commitado para o Pages funcionar mesmo sem rebuild
+- [ ] Badge de deploy no README + URLs públicas
+- [ ] `data.json` commitado para o painel funcionar mesmo sem rebuild
 
 ## M4 — Generalizar para qualquer cidade BR
 **Pronto quando:** um terceiro consegue gerar o painel de outra região só editando

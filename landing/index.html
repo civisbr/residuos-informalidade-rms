@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Observatório de Resíduos &amp; Informalidade — CivisBR</title>
+<meta name="description" content="Painel open-source que mostra resíduos sólidos e informalidade por município brasileiro. Referência: Região Metropolitana de Sorocaba.">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #1a1a1a; line-height: 1.65; background: #fff; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 56px 24px 64px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #007a2f; margin-bottom: 16px; }
+  .eyebrow::before { content: ""; width: 20px; height: 2px; background: #007a2f; }
+  h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.1; letter-spacing: -.5px; color: #002776; margin-bottom: 16px; }
+  h1 em { font-style: italic; font-weight: 400; color: #555; }
+  .sub { font-size: 18px; color: #555; margin-bottom: 32px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 4px; font-size: 15px; font-weight: 600; text-decoration: none; }
+  .btn-live { background: #007a2f; color: #fff; }
+  .btn-live:hover { background: #00612a; }
+  .btn-ghost { border: 1.5px solid #ccc; color: #002776; }
+  .btn-ghost:hover { border-color: #002776; }
+  h2 { font-size: 20px; color: #002776; margin: 36px 0 12px; }
+  p, li { font-size: 16px; color: #333; }
+  ul { padding-left: 22px; margin: 8px 0 16px; }
+  li { margin-bottom: 6px; }
+  .flags { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
+  .flag { font-family: ui-monospace, monospace; font-size: 12px; padding: 3px 10px; border-radius: 3px; }
+  .real { background: #e8f9ef; color: #00612a; }
+  .est { background: #fef8e0; color: #806200; }
+  .pend { background: #f0efed; color: #7a7874; }
+  footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #e5e5e5; font-size: 14px; color: #777; }
+  footer a { color: #002776; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">CivisBR · Observatório</p>
+  <h1>Para onde vai a massa <em>— e quem fica de fora</em></h1>
+  <p class="sub">Painel vivo e open-source sobre resíduos sólidos urbanos e informalidade por município brasileiro, com projeção do impacto de coleta de orgânicos + bioconversão por BSF. Referência regional: RMS, 27 municípios.</p>
+
+  <div class="cta">
+    <a class="btn btn-live" href="https://residuos-informalidade-rms.pages.dev">Abrir o painel de Sorocaba →</a>
+    <a class="btn btn-ghost" href="https://github.com/civisbr/residuos-informalidade-rms">Ver repositório</a>
+  </div>
+
+  <h2>O que o painel mostra</h2>
+  <ul>
+    <li><strong>Baseline (dado público):</strong> RSU, orgânico, reciclado e cooperados por município — SNIS/SINISA, PMGIRS, IBGE.</li>
+    <li><strong>Simulador (projeção de modelo):</strong> desvio de aterro, CO₂e evitado, larva/frass e renda a catadores, com coeficientes conservadores e editáveis.</li>
+    <li><strong>Informalidade:</strong> ocupação informal (Censo/PNAD) e proxy de formalização (RAIS/CAGED), com nota explícita de subcontagem.</li>
+  </ul>
+
+  <h2>Como ler os selos</h2>
+  <div class="flags">
+    <span class="flag real">real — medição de fonte pública</span>
+    <span class="flag est">estimativa — cálculo do modelo</span>
+    <span class="flag pend">pendente — sem dado, sem chute</span>
+  </div>
+  <p>Baseline e simulador ficam visualmente separados no painel. Projeção nunca é apresentada como medição.</p>
+
+  <h2>Por que dois endereços?</h2>
+  <p>Esta página (GitHub Pages) explica o projeto. O painel interativo com os dados — que abre em Sorocaba, o município-foco — roda no Cloudflare Pages, atualizado a cada push na <em>main</em> por GitHub Actions.</p>
+
+  <footer>
+    CivisBR — código aberto (MIT). Metodologia versionada no repositório.
+    Dúvidas? Abra uma <a href="https://github.com/civisbr/residuos-informalidade-rms/issues">issue</a>.
+  </footer>
+</div>
+</body>
+</html>
