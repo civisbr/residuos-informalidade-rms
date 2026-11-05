@@ -3,75 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Observatório de Resíduos &amp; Informalidade</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Região Metropolitana de Sorocaba — Observatório de Resíduos &amp; Informalidade</title>
+<meta name="description" content="Resíduos, trabalho e possibilidades de transformação na Região Metropolitana de Sorocaba.">
+<link rel="icon" href="assets/favicon.png">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<header>
-  <div class="eyebrow"><span class="dot"></span> Observatório · Resíduos &amp; Informalidade · <span id="regName">—</span></div>
-  <h1>Para onde vai a massa <em>— e quem fica de fora</em></h1>
-  <p class="sub">Painel vivo do impacto potencial de coleta de orgânicos + bioconversão por BSF. Dado público real combinado a um modelo transparente, para medir desvio de aterro, valorização e formalização de catadores. Open-source, extensível a qualquer município brasileiro.</p>
-</header>
+<aside class="side">
+  <img class="side-logo" src="assets/logo.png" alt="Observatório de Resíduos &amp; Informalidade — CivisBR">
+  <nav class="side-nav" aria-label="Seções do painel">
+    <a href="#visao" class="active">Visão regional</a>
+    <a href="#municipios">Municípios</a>
+    <a href="#simulador">Simulador BSF</a>
+    <a href="#informalidade">Catadores e renda</a>
+    <a href="#fontes">Fontes e método</a>
+  </nav>
+  <a class="side-about" href="https://civisbr.github.io/residuos-informalidade-rms/">Sobre o projeto ↗</a>
+</aside>
 
-<div class="controls-top">
-  <div class="selwrap">
-    <label for="citySel">Município</label>
-    <select id="citySel" aria-label="Selecionar município"></select>
-  </div>
-  <div class="pop" id="popline">—</div>
-</div>
+<main class="main">
+  <p class="eyebrow">PAINEL REGIONAL</p>
+  <h1 id="regName">—</h1>
+  <p class="sub">Resíduos, trabalho e possibilidades de transformação.</p>
 
-<div class="seclabel">Panorama da região <span class="tag real">dado público</span></div>
-<div class="region-strip" id="regionStrip"></div>
-
-<div class="seclabel">Fluxo de massa — RSU do município <span id="flowTags"></span></div>
-<div id="flowSlot"></div>
-
-<div class="seclabel">Linha de base do município</div>
-<div class="kpis" id="kpis"></div>
-
-<div class="seclabel">Informalidade do trabalho no município <span id="infTags"></span></div>
-<div class="kpis" id="kpisInf"></div>
-<div class="caveat" id="infSubcount" style="display:block"></div>
-<div id="pnadRegional"></div>
-
-<div class="seclabel">Simulador de impacto — Coleta de orgânicos + BSF <span class="tag proj">projeção do modelo</span></div>
-<div class="sim">
-  <div class="panel">
-    <h3>Parâmetros da operação</h3>
-    <p class="ph">Fase 1 (coleta B2B) com camada Fase 2 (bioconversão). Ajuste e veja o impacto recalcular sobre o orgânico deste município.</p>
-
-    <div class="ctrl">
-      <label>Clientes B2B captados <span class="cv mono"><b id="vCli">36</b></span></label>
-      <input type="range" id="sCli" min="0" max="200" value="36" step="1">
-      <div class="hint" id="hCli"></div>
+  <div class="topbar" id="municipios">
+    <div class="selwrap">
+      <label for="citySel">Município</label>
+      <select id="citySel" aria-label="Selecionar município"></select>
+      <span class="pop" id="popline">—</span>
     </div>
-    <div class="ctrl">
-      <label>Orgânico por cliente <span class="cv mono"><b id="vKg">80</b> kg/dia</span></label>
-      <input type="range" id="sKg" min="20" max="200" value="80" step="5">
-      <div class="hint">restaurante pequeno/médio: ~30–150 kg/dia de orgânico</div>
-    </div>
-    <div class="ctrl">
-      <label>Partilha p/ catadores <span class="cv mono"><b id="vSh">30</b>%</span></label>
-      <input type="range" id="sSh" min="0" max="60" value="30" step="5">
-      <div class="hint">% do faturamento de gate fee ao fundo de partilha</div>
-    </div>
-    <div class="ctrl">
-      <label>Gate fee por cliente <span class="cv mono">R$ <b id="vFee">400</b>/mês</span></label>
-      <input type="range" id="sFee" min="150" max="900" value="400" step="25">
-      <div class="hint">mensalidade B2B de coleta — receita da Fase 1</div>
-    </div>
-
-    <details class="assump"><summary>Pressupostos do modelo</summary>
-      <div class="ab" id="assumpBody"></div>
-    </details>
+    <a class="dl" href="data.json" download="data.json">Baixar dados ↓</a>
   </div>
 
-  <div>
+  <div class="legend" aria-label="Legenda de qualidade">
+    <span>Legenda:</span>
+    <span><i class="sw real"></i> Dado público</span>
+    <span><i class="sw est"></i> Estimativa</span>
+    <span><i class="sw sim"></i> Simulação</span>
+    <span><i class="sw pend"></i> Pendente</span>
+  </div>
+
+  <section id="visao" class="kpi4" aria-label="Visão regional">
+    <div id="regionStrip" class="kpi4-grid"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>Explore sua região</h2>
+      <div class="munlist" id="munList" role="list"></div>
+      <p class="card-note">Selecione um município para ver os dados locais abaixo.</p>
+      <h3 class="flow-title">Destino no município <span id="flowTags"></span></h3>
+      <div id="flowSlot"></div>
+    </section>
+    <section class="card">
+      <h2>Para onde vão os resíduos?</h2>
+      <div id="destBars"></div>
+      <p class="card-note">Fontes e anos variam por município.</p>
+      <p class="card-link"><a href="#fontes">Ver fontes →</a></p>
+    </section>
+  </div>
+
+  <section class="card" aria-label="Linha de base do município">
+    <h2>Linha de base do município</h2>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section class="band" id="informalidade">
+    <h2>Informalidade do trabalho <span class="chips" id="infTags"></span></h2>
+    <p class="band-note">Informalidade geral do município não equivale ao número de catadores.</p>
+    <div class="kpis" id="kpisInf"></div>
+    <div class="caveat" id="infSubcount"></div>
+    <div id="pnadRegional"></div>
+  </section>
+
+  <section class="simsec" id="simulador">
+    <p class="proj-chip">PROJEÇÃO DO MODELO</p>
+    <h2>E se os orgânicos virassem oportunidade?</h2>
+    <p class="sub2">Ajuste um cenário de coleta e veja a partilha potencial.</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="ctrl">
+          <label>Clientes atendidos <span class="cv mono"><b id="vCli">36</b></span></label>
+          <input type="range" id="sCli" min="0" max="200" value="36" step="1">
+          <div class="hint" id="hCli"></div>
+        </div>
+        <div class="ctrl">
+          <label>Orgânicos por cliente <span class="cv mono"><b id="vKg">80</b> kg/dia</span></label>
+          <input type="range" id="sKg" min="20" max="200" value="80" step="5">
+        </div>
+        <div class="ctrl">
+          <label>Mensalidade da coleta <span class="cv mono">R$ <b id="vFee">400</b>/mês</span></label>
+          <input type="range" id="sFee" min="150" max="900" value="400" step="25">
+        </div>
+        <div class="ctrl">
+          <label>Receita destinada à partilha <span class="cv mono"><b id="vSh">30</b>%</span></label>
+          <input type="range" id="sSh" min="0" max="60" value="30" step="5">
+        </div>
+      </div>
+      <div class="card fund">
+        <p class="fund-lab">Fundo de partilha simulado</p>
+        <p class="fund-val mono"><span id="oPool">—</span></p>
+        <p class="fund-sub"><b id="rev">—</b> de receita bruta da coleta</p>
+        <p class="fund-note">Antes de custos e sem receita de subprodutos.</p>
+      </div>
+    </div>
     <div class="out">
       <div class="ocard c1"><div class="o-lab">ORGÂNICO DESVIADO DO ATERRO</div>
         <div class="o-val mono"><span id="oDiv">—</span> <small>t/ano</small></div>
@@ -79,44 +115,57 @@
       <div class="ocard c2"><div class="o-lab">CO₂e EVITADO</div>
         <div class="o-val mono"><span id="oCO2">—</span> <small>t/ano</small></div>
         <div class="o-sub">~<b id="oCars">—</b> carros fora de circulação por um ano (ilustrativo).</div></div>
-      <div class="ocard c3"><div class="o-lab">SUBPRODUTOS BSF · FASE 2</div>
+      <div class="ocard c3"><div class="o-lab">SUBPRODUTOS BSF</div>
         <div class="o-val mono"><span id="oFrass">—</span> <small>t/ano frass</small></div>
         <div class="o-sub"><b id="oLarva">—</b> de larva seca (mercado pet/aves).</div></div>
       <div class="ocard c4"><div class="o-lab">CATADORES NA ESCADA DE FORMALIZAÇÃO</div>
         <div class="o-val mono"><span id="oCat">—</span> <small>sustentados</small></div>
-        <div class="o-sub">a partir de <b id="oPool">—</b>/ano do fundo de partilha.</div></div>
+        <div class="o-sub">pelo fundo de partilha (renda-alvo mensal por catador).</div></div>
     </div>
-    <div class="revline">
-      <span class="rl-lab">Receita de gate fee (Fase 1) — antes de subprodutos</span>
-      <span class="rl-val mono" id="rev">—</span>
+    <p class="disclaim">Cenário ilustrativo. Não representa renda já distribuída nem postos formalizados.</p>
+    <details class="assump"><summary>Ver pressupostos do modelo →</summary>
+      <div class="ab" id="assumpBody"></div>
+    </details>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>O que é BSF?</h2>
+      <p>É a mosca-soldado-negro. Suas larvas fazem a bioconversão dos orgânicos.</p>
+      <p class="card-link"><a href="https://civisbr.github.io/residuos-informalidade-rms/#como-funciona">Entender o ciclo →</a></p>
+    </section>
+    <section class="card">
+      <h2>Quem participa do valor gerado?</h2>
+      <p>A proposta conecta coleta, bioconversão e partilha com catadores.</p>
+      <p class="card-link"><a href="#simulador">Entenda a proposta →</a></p>
+    </section>
+  </div>
+
+  <section class="band op" aria-label="Medição da operação">
+    <h2>Medição da operação <span class="chip-live">Em implantação</span></h2>
+    <p class="band-note">Resultados reais aparecerão aqui quando houver registros de campo.</p>
+    <div id="opSlot"></div>
+  </section>
+
+  <footer id="fontes">
+    <div class="srcgrid">
+      <div><h4>Fontes do baseline</h4>
+        <p>SNIS / SINISA — Diagnóstico de Manejo de RSU (anual, por município)</p>
+        <p>PMGIRS — Plano Municipal de Gestão Integrada de Resíduos</p>
+        <p>Prefeituras — PPP / Sec. de Serviços Públicos</p></div>
+      <div><h4>Informalidade</h4>
+        <p>IBGE — Censo 2022 (ocupação informal)</p>
+        <p>RAIS / CAGED — vínculo formal (proxy)</p>
+        <p>MNCR / IPEA — estimativas da população catadora</p></div>
+      <div><h4>Camada operacional (futura)</h4>
+        <p>Telemetria da própria coleta — t/mês por cliente</p>
+        <p>Pesagem de orgânico, larva e frass</p></div>
     </div>
-  </div>
-</div>
-
-<div class="seclabel">Operação ao vivo <span class="tag live">medição da operação</span></div>
-<div id="opSlot"></div>
-
-<footer>
-  <div class="srcgrid">
-    <div><h4>Fontes do baseline</h4>
-      <p>SNIS / SINISA — Diagnóstico de Manejo de RSU (anual, por município)</p>
-      <p>PMGIRS — Plano Municipal de Gestão Integrada de Resíduos</p>
-      <p>Prefeituras — PPP / Sec. de Serviços Públicos</p>
-      <p>Instituto Água e Saneamento — ficha do município</p></div>
-    <div><h4>Informalidade</h4>
-      <p>IBGE — Censo / PNAD (ocupação informal)</p>
-      <p>RAIS / CAGED — vínculo formal (proxy)</p>
-      <p>Convênios municipais com cooperativas (transparência)</p>
-      <p>MNCR / IPEA — estimativas da população catadora</p></div>
-    <div><h4>Camada operacional (futura)</h4>
-      <p>Telemetria da própria coleta — t/mês por cliente</p>
-      <p>Pesagem de orgânico, larva e frass</p>
-      <p>Registro da escada de partilha por catador</p>
-      <p>É o que torna o painel <em>vivo</em> de verdade.</p></div>
-  </div>
-  <div class="caveat" id="caveat"></div>
-  <div class="foot-meta" id="footMeta">—</div>
-</footer>
+    <div class="caveat" id="caveat"></div>
+    <div class="foot-meta" id="footMeta">—</div>
+    <p class="foot-line">Dados abertos • Fontes e anos por município • CivisBR</p>
+  </footer>
+</main>
 
 <script src="app.js"></script>
 </body>

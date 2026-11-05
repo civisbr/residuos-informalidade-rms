@@ -1,3 +1,5 @@
+<img src="site/assets/logo.png" width="480" alt="Observatório de Resíduos & Informalidade — CivisBR">
+
 # Observatório de Resíduos & Informalidade
 
 [![Deploy](https://github.com/civisbr/residuos-informalidade-rms/actions/workflows/deploy.yml/badge.svg)](https://github.com/civisbr/residuos-informalidade-rms/actions/workflows/deploy.yml) **[Abrir o painel de Sorocaba →](https://residuos-informalidade-rms.pages.dev)** · [Sobre o projeto](https://civisbr.github.io/residuos-informalidade-rms/)

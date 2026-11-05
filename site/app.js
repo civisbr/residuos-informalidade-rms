@@ -26,6 +26,7 @@ async function boot() {
      informais são subcontados pelas bases oficiais — trate como piso, não total.`;
   buildAssumptions();
   buildRegionStrip();
+  buildRegionDetail();
   buildCitySelect();
   wireSimulator();
 
@@ -49,17 +50,40 @@ function buildAssumptions() {
 
 function buildRegionStrip() {
   const t = DATA.totais;
-  const cells = [
-    ["Municípios com dado", `${t.municipios_com_dado}<small>/${t.municipios_total}</small>`],
-    ["RSU (com dado)", `${fmt(t.rsu_t_ano)}<small> t/ano</small>`],
-    ["Orgânico estimado", `${fmt(t.organico_t_ano)}<small> t/ano</small>`],
-    ["Reciclado", `${fmt(t.reciclado_t_ano)}<small> t/ano</small>`],
-    ["Cooperados mapeados", `${fmt(t.cooperados)}`],
-    ["Informalidade média da região", t.taxa_inf_media != null ? `${fmt(t.taxa_inf_media, 1)}<small>%</small>` : "—"],
-    ["População", `${fmt(t.populacao)}`],
+  const mil = v => v != null ? `${fmt(v / 1000, 1)} <small>mil t/ano</small>` : "—";
+  const cards = [
+    [`${t.municipios_total}`, "municípios no painel", "Cobertura territorial"],
+    [mil(t.rsu_t_ano), "resíduos coletados", "Soma das bases disponíveis • anos distintos"],
+    [mil(t.organico_t_ano), "orgânicos estimados", "Composição estimada • não é pesagem"],
+    [`${fmt(t.cooperados)}`, "cooperados registrados", "Cobertura parcial • não é total de catadores"],
   ];
-  $("regionStrip").innerHTML = cells.map(([l, v]) =>
-    `<div><div class="rs-l">${l}</div><div class="rs-v">${v}</div></div>`).join("");
+  $("regionStrip").innerHTML = cards.map(([v, l, n]) =>
+    `<div class="kpi4c"><div class="k4-v mono">${v}</div><div class="k4-l">${l}</div><div class="k4-n">${n}</div></div>`).join("");
+}
+
+// Painel "Explore sua região": chips de municípios + barras de destino (totais).
+function buildRegionDetail() {
+  const t = DATA.totais;
+  $("munList").innerHTML = DATA.municipios.map(m =>
+    `<button class="munchip" role="listitem" data-mun="${m.nome}"><span class="dot ${m.flag}"></span>${m.nome}</button>`).join("");
+  $("munList").querySelectorAll("button").forEach(b =>
+    b.addEventListener("click", () => selectCity(b.dataset.mun)));
+
+  const dest = [
+    ["Aterro", t.aterro_t_ano, "aterro"],
+    ["Reciclagem", t.reciclado_t_ano, "recic"],
+    ["Orgânicos: potencial estimado", t.organico_t_ano, "org"],
+  ];
+  const max = Math.max(1, ...dest.map(([, v]) => v || 0));
+  $("destBars").innerHTML = dest.map(([l, v, cls]) =>
+    `<div class="drow"><span class="dlab">${l}</span>
+     <div class="dbar"><div class="dfill ${cls}" style="width:${((v || 0) / max * 100).toFixed(1)}%"></div></div>
+     <span class="dval mono">${v != null ? "~" + fmt(v / 1000, 1) + " mil t/ano" : "—"}</span></div>`).join("");
+}
+
+function markActiveChip() {
+  document.querySelectorAll("#munList .munchip").forEach(b =>
+    b.classList.toggle("on", CITY && b.dataset.mun === CITY.nome));
 }
 
 function buildCitySelect() {
@@ -95,6 +119,7 @@ function selectCity(nome) {
   renderInformalidade();
   renderOperacao();
   recalc();
+  markActiveChip();
 }
 
 // Série temporal SVG inline à mão (D-10) — zero dependência. Desenha duas
@@ -242,7 +267,7 @@ function renderInformalidade() {
        <div class="k-val mono">${val}<small>${u}</small></div>
        <div class="k-note">${note}</div></div>`;
 
-  $("infTags").innerHTML = `<span class="tag real">Censo 2022</span>`;
+  $("infTags").innerHTML = `<span class="tag real">Censo 2022</span> <span class="tag real">RAIS 2023</span>`;
 
   const flagInf = c.flag_informalidade || "pendente";
   const taxaVal = c.taxa_informalidade_pct != null
@@ -318,8 +343,8 @@ function recalc() {
     : `selecione um município com dado de RSU para ver o % do orgânico local.`;
   $("oCO2").textContent = fmt(r.co2e); $("oCars").textContent = fmt(r.carros);
   $("oFrass").textContent = fmt(r.frass); $("oLarva").textContent = fmt(r.larvaSeca) + " t/ano";
-  $("oCat").textContent = fmt(r.catadores, 1); $("oPool").textContent = "R$ " + fmt(r.fundo / 1000, 1) + " mil";
-  $("rev").textContent = "R$ " + fmt(r.receita / 1000, 1) + " mil/ano";
+  $("oCat").textContent = fmt(r.catadores, 1); $("oPool").textContent = "R$ " + fmt(r.fundo / 12) + "/mês";
+  $("rev").textContent = "R$ " + fmt(r.receita / 12) + "/mês";
 }
 
 function wireSimulator() {

@@ -3,7 +3,7 @@
     "regiao_key": "rms",
     "regiao_nome": "Região Metropolitana de Sorocaba",
     "destaque": "Sorocaba",
-    "gerado_em": "2026-11-04",
+    "gerado_em": "2026-11-05",
     "fonte_baseline": "SNIS/SINISA, PMGIRS, IBGE, transparência municipal",
     "aviso": "Baseline = dado público (defasagem anual do SNIS). Simulador = projeção de modelo; calibre antes de publicar.",
     "pnad_contexto_regional": {

@@ -4,68 +4,199 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Observatório de Resíduos &amp; Informalidade — CivisBR</title>
-<meta name="description" content="Painel open-source que mostra resíduos sólidos e informalidade por município brasileiro. Referência: Região Metropolitana de Sorocaba.">
+<meta name="description" content="Entenda o destino dos resíduos e simule caminhos para valorizar orgânicos e incluir catadores.">
+<link rel="icon" href="assets/favicon.png">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #1a1a1a; line-height: 1.65; background: #fff; }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 56px 24px 64px; }
-  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #007a2f; margin-bottom: 16px; }
-  .eyebrow::before { content: ""; width: 20px; height: 2px; background: #007a2f; }
-  h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.1; letter-spacing: -.5px; color: #002776; margin-bottom: 16px; }
-  h1 em { font-style: italic; font-weight: 400; color: #555; }
-  .sub { font-size: 18px; color: #555; margin-bottom: 32px; }
-  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
-  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 4px; font-size: 15px; font-weight: 600; text-decoration: none; }
-  .btn-live { background: #007a2f; color: #fff; }
-  .btn-live:hover { background: #00612a; }
-  .btn-ghost { border: 1.5px solid #ccc; color: #002776; }
-  .btn-ghost:hover { border-color: #002776; }
-  h2 { font-size: 20px; color: #002776; margin: 36px 0 12px; }
-  p, li { font-size: 16px; color: #333; }
-  ul { padding-left: 22px; margin: 8px 0 16px; }
-  li { margin-bottom: 6px; }
-  .flags { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
-  .flag { font-family: ui-monospace, monospace; font-size: 12px; padding: 3px 10px; border-radius: 3px; }
-  .real { background: #e8f9ef; color: #00612a; }
-  .est { background: #fef8e0; color: #806200; }
-  .pend { background: #f0efed; color: #7a7874; }
-  footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #e5e5e5; font-size: 14px; color: #777; }
-  footer a { color: #002776; }
+  :root {
+    --cream: #f7f2e4; --cream-2: #efe8d2; --band: #dde3c2;
+    --ink: #22331f; --dark: #16301f; --muted: #5f6d59;
+    --gold: #c2912a; --gold-soft: #e9d9a8; --line: #d8cfb4;
+  }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--cream); line-height: 1.6; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3, .serif { font-family: Georgia, "Times New Roman", serif; color: var(--dark); }
+
+  header.top { border-bottom: 1px solid var(--line); background: var(--cream); }
+  .nav { display: flex; align-items: center; gap: 28px; padding: 14px 0; }
+  .nav img.logo { height: 56px; width: auto; }
+  .nav nav { display: flex; gap: 22px; margin-left: 8px; }
+  .nav nav a { color: var(--ink); text-decoration: none; font-size: 15px; }
+  .nav nav a:hover { text-decoration: underline; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--dark); color: #fff;
+    padding: 11px 22px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px; }
+  .btn:hover { background: #0f2717; }
+  .btn.ghost { background: transparent; color: var(--dark); border: 1.5px solid var(--dark); }
+  .btn.ghost:hover { background: var(--dark); color: #fff; }
+  .nav .btn { margin-left: auto; }
+
+  .hero { padding: 56px 0 48px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; color: var(--muted); margin-bottom: 14px; }
+  .eyebrow::after { content: ""; display: block; width: 44px; height: 3px; background: var(--gold); margin-top: 8px; }
+  .hero h1 { font-size: clamp(38px, 6vw, 64px); line-height: 1.04; letter-spacing: -.5px; margin-bottom: 18px; }
+  .hero p.sub { font-size: 18px; color: #43513e; max-width: 560px; margin-bottom: 28px; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .strip { background: var(--band); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 36px 0; }
+  .strip-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 28px; align-items: start; }
+  .strip h2 { font-size: clamp(24px, 3vw, 32px); line-height: 1.15; }
+  .feat { border-left: 1px solid #b9bfa0; padding-left: 20px; }
+  .feat .ic { width: 46px; height: 46px; border-radius: 50%; background: var(--gold); display: flex;
+    align-items: center; justify-content: center; margin-bottom: 10px; }
+  .feat .ic svg { width: 24px; height: 24px; stroke: #fff; fill: none; stroke-width: 1.8; }
+  .feat h3 { font-size: 19px; margin-bottom: 4px; }
+  .feat p { font-size: 14px; color: #43513e; }
+
+  .bsf { padding: 56px 0; }
+  .bsf h2 { font-size: clamp(28px, 4vw, 44px); line-height: 1.1; margin-bottom: 8px; }
+  .bsf .lede { font-style: italic; color: var(--muted); margin-bottom: 6px; }
+  .bsf .lede2 { max-width: 640px; margin-bottom: 32px; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; align-items: stretch; margin-top: 12px; }
+  .step { text-align: center; padding: 0 12px; position: relative; }
+  .step .n { display: inline-flex; width: 44px; height: 44px; border-radius: 50%; background: #cfd8ac;
+    color: var(--dark); font-weight: 700; align-items: center; justify-content: center; margin-bottom: 10px; }
+  .step .pic { width: 84px; height: 84px; border-radius: 50%; background: var(--cream-2);
+    border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+  .step .pic svg { width: 40px; height: 40px; stroke: var(--dark); fill: none; stroke-width: 1.6; }
+  .step h3 { font-size: 17px; }
+  .step:not(:last-child)::after { content: "→"; position: absolute; right: -8px; top: 60px; color: var(--gold); font-weight: 700; }
+
+  .money { background: var(--dark); color: #f2ecda; padding: 52px 0; }
+  .money h2 { color: #fff; font-size: clamp(28px, 4vw, 44px); line-height: 1.1; margin-bottom: 12px; }
+  .money h2::after { content: ""; display: block; width: 44px; height: 3px; background: var(--gold); margin-top: 10px; }
+  .money p { max-width: 600px; }
+  .money .note { font-style: italic; font-size: 14px; opacity: .75; margin-top: 12px; }
+
+  .flags { padding: 40px 0 8px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .flag { border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: #faf6ea; }
+  .flag h3 { font-size: 18px; display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .flag h3 svg { width: 26px; height: 26px; stroke: var(--dark); fill: none; stroke-width: 1.8; }
+  .flag p { font-size: 14px; color: var(--muted); }
+
+  footer.bot { padding: 28px 0 40px; }
+  .foot { display: flex; align-items: center; gap: 20px; border-top: 1px solid var(--line); padding-top: 20px; flex-wrap: wrap; }
+  .foot .brand { font-family: Georgia, serif; font-weight: 700; font-size: 20px; color: var(--dark); }
+  .foot a { color: var(--dark); text-decoration: none; font-weight: 600; font-size: 15px; }
+  .foot a:hover { text-decoration: underline; }
+  .foot .sep { color: var(--line); }
+  @media (max-width: 760px) {
+    .strip-grid, .flags, .steps { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .nav nav { display: none; }
+    .step:not(:last-child)::after { content: none; }
+  }
 </style>
 </head>
-<body>
-<div class="wrap">
-  <p class="eyebrow">CivisBR · Observatório</p>
-  <h1>Para onde vai a massa <em>— e quem fica de fora</em></h1>
-  <p class="sub">Painel vivo e open-source sobre resíduos sólidos urbanos e informalidade por município brasileiro, com projeção do impacto de coleta de orgânicos + bioconversão por BSF. Referência regional: RMS, 27 municípios.</p>
+<body id="o-projeto">
 
-  <div class="cta">
-    <a class="btn btn-live" href="https://residuos-informalidade-rms.pages.dev">Abrir o painel de Sorocaba →</a>
-    <a class="btn btn-ghost" href="https://github.com/civisbr/residuos-informalidade-rms">Ver repositório</a>
+<header class="top">
+  <div class="wrap nav">
+    <a href="#o-projeto" aria-label="Início"><img class="logo" src="assets/logo.png" alt="Observatório de Resíduos &amp; Informalidade — CivisBR"></a>
+    <nav aria-label="Seções">
+      <a href="#o-projeto">O projeto</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#dados">Dados abertos</a>
+    </nav>
+    <a class="btn" href="https://residuos-informalidade-rms.pages.dev">Explorar Sorocaba ↗</a>
   </div>
+</header>
 
-  <h2>O que o painel mostra</h2>
-  <ul>
-    <li><strong>Baseline (dado público):</strong> RSU, orgânico, reciclado e cooperados por município — SNIS/SINISA, PMGIRS, IBGE.</li>
-    <li><strong>Simulador (projeção de modelo):</strong> desvio de aterro, CO₂e evitado, larva/frass e renda a catadores, com coeficientes conservadores e editáveis.</li>
-    <li><strong>Informalidade:</strong> ocupação informal (Censo/PNAD) e proxy de formalização (RAIS/CAGED), com nota explícita de subcontagem.</li>
-  </ul>
-
-  <h2>Como ler os selos</h2>
-  <div class="flags">
-    <span class="flag real">real — medição de fonte pública</span>
-    <span class="flag est">estimativa — cálculo do modelo</span>
-    <span class="flag pend">pendente — sem dado, sem chute</span>
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">ECOLOGIA, DADOS E INCLUSÃO</p>
+    <h1>O que sobra<br>pode virar renda.</h1>
+    <p class="sub">Entenda o destino dos resíduos e simule caminhos para valorizar orgânicos e incluir catadores.</p>
+    <div class="cta-row">
+      <a class="btn" href="https://residuos-informalidade-rms.pages.dev">Explorar o painel →</a>
+      <a class="btn ghost" href="#como-funciona">Entenda a bioconversão</a>
+    </div>
   </div>
-  <p>Baseline e simulador ficam visualmente separados no painel. Projeção nunca é apresentada como medição.</p>
+</section>
 
-  <h2>Por que dois endereços?</h2>
-  <p>Esta página (GitHub Pages) explica o projeto. O painel interativo com os dados — que abre em Sorocaba, o município-foco — roda no Cloudflare Pages, atualizado a cada push na <em>main</em> por GitHub Actions.</p>
+<section class="strip">
+  <div class="wrap strip-grid">
+    <h2>Dados para enxergar. Simulações para agir.</h2>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3c-4 0-7 3-7 8 0 4 3 8 7 10 4-2 7-6 7-10 0-5-3-8-7-8z"/><path d="M12 3c0-1 1-2 2-2"/></svg></div>
+      <h3>Resíduos</h3>
+      <p>Acompanha o destino dos resíduos, com foco nos orgânicos.</p>
+    </div>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.6c2.8.3 5 2 5 4.4"/></svg></div>
+      <h3>Trabalho</h3>
+      <p>Analisa a inclusão de catadores em rotas de maior valor.</p>
+    </div>
+    <div class="feat">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5l2 2"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5l-2-2"/><path d="M4 20v-5h5"/></svg></div>
+      <h3>Potencial de transformação</h3>
+      <p>Simula caminhos de bioconversão e uso dos subprodutos.</p>
+    </div>
+  </div>
+</section>
 
-  <footer>
-    CivisBR — código aberto (MIT). Metodologia versionada no repositório.
-    Dúvidas? Abra uma <a href="https://github.com/civisbr/residuos-informalidade-rms/issues">issue</a>.
-  </footer>
-</div>
+<section class="bsf" id="como-funciona">
+  <div class="wrap">
+    <h2>BSF: uma pequena mosca,<br>uma grande transformação.</h2>
+    <p class="lede">BSF vem de Black Soldier Fly: a mosca-soldado-negro (Hermetia illucens).</p>
+    <p class="lede2">São as larvas que transformam resíduos orgânicos em biomassa. O processo gera larvas e frass, um resíduo que pode ser aproveitado após tratamento adequado.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="n">01</span>
+        <div class="pic"><svg viewBox="0 0 24 24"><path d="M5 8h14l-2 12H7L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></div>
+        <h3>Separar orgânicos</h3>
+      </div>
+      <div class="step">
+        <span class="n">02</span>
+        <div class="pic"><svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><path d="M2 20h20l-2-9H4l-2 9z"/></svg></div>
+        <h3>Coleta com cooperativas</h3>
+      </div>
+      <div class="step">
+        <span class="n">03</span>
+        <div class="pic"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 8c2 0 2 3 0 3M19 8c-2 0-2 3 0 3M5 16c2 0 2-3 0-3M19 16c-2 0-2-3 0-3"/></svg></div>
+        <h3>Bioconverter com larvas</h3>
+      </div>
+      <div class="step">
+        <span class="n">04</span>
+        <div class="pic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v10M9 9.5h6"/></svg></div>
+        <h3>Valorizar e partilhar</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="money">
+  <div class="wrap">
+    <h2>O dinheiro também<br>precisa circular.</h2>
+    <p>No modelo proposto, parte da receita da coleta vai para um fundo de partilha dos catadores.</p>
+    <p class="note">Receita da coleta e venda de subprodutos são etapas diferentes.</p>
+  </div>
+</section>
+
+<section id="dados">
+  <div class="wrap flags">
+    <div class="flag">
+      <h3><svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4z"/><path d="M4 7v10l8 4 8-4V7"/><path d="M12 11v10"/></svg>Dado público</h3>
+      <p>Fontes e ano de referência.</p>
+    </div>
+    <div class="flag">
+      <h3><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M21 20H3"/></svg>Projeção do modelo</h3>
+      <p>Cenários, não resultados medidos.</p>
+    </div>
+    <div class="flag">
+      <h3><svg viewBox="0 0 24 24"><path d="M12 3L2 20h20L12 3z"/><path d="M12 10v5M12 17.5v.5"/></svg>Dado pendente</h3>
+      <p>Lacunas visíveis, sem inventar números.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="bot">
+  <div class="wrap foot">
+    <span class="brand">CivisBR</span>
+    <span class="sep">|</span>
+    <a href="https://github.com/civisbr/residuos-informalidade-rms">GitHub</a>
+    <span class="sep">|</span>
+    <a href="https://github.com/civisbr/residuos-informalidade-rms">Conheça a metodologia →</a>
+  </div>
+</footer>
+
 </body>
 </html>
