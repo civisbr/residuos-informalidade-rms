@@ -1,4 +1,4 @@
-<img src="site/assets/logo.png" width="480" alt="Observatório de Resíduos & Informalidade — CivisBR">
+<img src="site/assets/logo.png" width="560" alt="Observatório de Resíduos & Informalidade — CivisBR">
 
 # Observatório de Resíduos & Informalidade
 
